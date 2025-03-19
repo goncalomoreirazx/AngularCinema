@@ -1,1 +1,39 @@
-<p>movie-list works!</p>
+<div class="movie-list-container">
+    <h1 class="page-title">Popular Movies</h1>
+    
+    <div class="filters-section">
+      <div class="movie-count">
+        Showing <strong>{{ displayedMovies.length }}</strong> movies
+      </div>
+      
+      <div class="sorting-options">
+        <label for="sort-select">Sort by:</label>
+        <select id="sort-select" [value]="selectedSort" (change)="onSortChange($event)">
+          <option value="rating">Rating (High to Low)</option>
+          <option value="year-desc">Release Year (Newest)</option>
+          <option value="year-asc">Release Year (Oldest)</option>
+          <option value="title">Title (A-Z)</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="movie-grid">
+      @for (movie of displayedMovies; track movie.id) {
+        <app-movie-card 
+          [movie]="movie" 
+          (viewDetails)="navigateToDetails($event)">
+        </app-movie-card>
+      }
+    </div>
+    
+    <!-- Pagination example (static for now) -->
+    <div class="pagination">
+      <button class="page-button" disabled>Previous</button>
+      <button class="page-button active">1</button>
+      <button class="page-button">2</button>
+      <button class="page-button">3</button>
+      <span class="page-indicator">...</span>
+      <button class="page-button">10</button>
+      <button class="page-button">Next</button>
+    </div>
+  </div>

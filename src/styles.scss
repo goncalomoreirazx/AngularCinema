@@ -1,1 +1,62 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+  }
+  
+  /* Page-specific background colors */
+  .movie-list-page {
+    background-color: #f5f5f5;
+    width: 100%;
+    display: block;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #7702FF;
+  }
+  
+  img {
+    max-width: 100%;
+  }
+  
+  button {
+    cursor: pointer;
+  }
+  
+  /* Remove default button styling */
+  button {
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #7702FF;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6200C9;
+  }

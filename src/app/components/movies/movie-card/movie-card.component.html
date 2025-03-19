@@ -1,0 +1,15 @@
+<div class="movie-card">
+    <div class="movie-poster">
+      <img [src]="movie.poster" [alt]="movie.title + ' poster'" />
+    </div>
+    <div class="movie-info">
+      <h3 class="movie-title">{{ movie.title }}</h3>
+      <div class="movie-metadata">
+        <span class="movie-year">{{ movie.year }}</span>
+        <span class="movie-rating">⭐ {{ movie.rating }}/10</span>
+      </div>
+      <p class="movie-director">Director: {{ movie.director }}</p>
+      <p class="movie-genre">{{ movie.genre }}</p>
+      <button class="details-button" (click)="onViewDetails()">View Details</button>
+    </div>
+  </div>
