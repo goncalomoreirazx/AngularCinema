@@ -1,1 +1,33 @@
-<p>navbar works!</p>
+<nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-logo">
+        <a routerLink="/">
+          <span class="logo-text">Angular<span class="accent">Cinema</span></span>
+        </a>
+      </div>
+      
+      <button class="mobile-menu-toggle" (click)="toggleMenu()" aria-label="Toggle menu">
+        <span [class.open]="isMenuOpen"></span>
+      </button>
+  
+      <div class="navbar-links" [class.active]="isMenuOpen">
+        <ul>
+          <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
+          <li><a routerLink="/movies" routerLinkActive="active">Movies</a></li>
+          <li><a routerLink="/schedule" routerLinkActive="active">Schedule</a></li>
+          <li><a routerLink="/pricing" routerLinkActive="active">Pricing</a></li>
+          <li><a routerLink="/about" routerLinkActive="active">About</a></li>
+        </ul>
+      </div>
+  
+      <div class="navbar-actions">
+        <button class="btn-search" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="btn-tickets">Get Tickets</button>
+      </div>
+    </div>
+  </nav>

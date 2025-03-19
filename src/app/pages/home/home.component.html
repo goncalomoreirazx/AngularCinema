@@ -1,1 +1,156 @@
-<p>home works!</p>
+<app-navbar></app-navbar>
+
+<main class="home-container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Experience Movies Like Never Before</h1>
+      <p>Stunning visuals, immersive sound, and ultimate comfort in our state-of-the-art cinema.</p>
+      <div class="hero-buttons">
+        <a routerLink="/movies" class="btn-primary">View All Movies</a>
+        <a routerLink="/schedule" class="btn-secondary">Check Schedule</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Now Showing Section -->
+  <section class="movie-section">
+    <div class="section-header">
+      <h2>Now Showing</h2>
+      <a routerLink="/movies" class="view-all">View All <span class="arrow">→</span></a>
+    </div>
+    
+    <div class="movie-grid">
+      @for (movie of featuredMovies; track movie.id) {
+        <div class="movie-card">
+          <div class="movie-poster">
+            <img [src]="movie.imageUrl" [alt]="movie.title + ' poster'">
+            <div class="movie-overlay">
+              <span class="rating">★ {{movie.rating}}</span>
+              <a routerLink="/movies/{{movie.id}}" class="btn-details">View Details</a>
+              <a routerLink="/tickets/{{movie.id}}" class="btn-book">Book Tickets</a>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>{{movie.title}}</h3>
+            <div class="movie-meta">
+              <span class="genre">{{movie.genre}}</span>
+              <span class="date">{{movie.releaseDate | date:'mediumDate'}}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+          <line x1="7" y1="2" x2="7" y2="22"></line>
+          <line x1="17" y1="2" x2="17" y2="22"></line>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <line x1="2" y1="7" x2="7" y2="7"></line>
+          <line x1="2" y1="17" x2="7" y2="17"></line>
+          <line x1="17" y1="17" x2="22" y2="17"></line>
+          <line x1="17" y1="7" x2="22" y2="7"></line>
+        </svg>
+      </div>
+      <h3>4K Ultra HD</h3>
+      <p>Experience crystal clear images with our 4K projectors for the ultimate viewing experience.</p>
+    </div>
+    
+    <div class="feature">
+      <div class="feature-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+      </div>
+      <h3>Dolby Atmos</h3>
+      <p>Immerse yourself in 360° sound that flows all around you with our advanced audio system.</p>
+    </div>
+    
+    <div class="feature">
+      <div class="feature-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <h3>VIP Experience</h3>
+      <p>Enjoy premium reclining seats, in-theater dining, and personalized service in our VIP screens.</p>
+    </div>
+    
+    <div class="feature">
+      <div class="feature-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <h3>Online Booking</h3>
+      <p>Book your tickets in advance, select your seats, and skip the line with our easy online booking system.</p>
+    </div>
+  </section>
+
+  <!-- Coming Soon Section -->
+  <section class="movie-section coming-soon">
+    <div class="section-header">
+      <h2>Coming Soon</h2>
+      <a routerLink="/coming-soon" class="view-all">View All <span class="arrow">→</span></a>
+    </div>
+    
+    <div class="movie-grid">
+      @for (movie of comingSoonMovies; track movie.id) {
+        <div class="movie-card">
+          <div class="movie-poster">
+            <img [src]="movie.imageUrl" [alt]="movie.title + ' poster'">
+            <div class="movie-overlay">
+              <span class="coming-soon-badge">Coming Soon</span>
+              <a routerLink="/movies/{{movie.id}}" class="btn-details">View Details</a>
+              <a routerLink="/notify/{{movie.id}}" class="btn-notify">Notify Me</a>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>{{movie.title}}</h3>
+            <div class="movie-meta">
+              <span class="genre">{{movie.genre}}</span>
+              <span class="date">{{movie.releaseDate | date:'mediumDate'}}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="cta-content">
+      <h2>Download Our App</h2>
+      <p>Book tickets, check movie schedules, and get exclusive offers right from your phone.</p>
+      <div class="app-buttons">
+        <a href="#" class="app-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.94 20a2.82 2.82 0 0 1-.94.67l-2.83 1a2.83 2.83 0 0 1-3.35-1.1L4.17 9.25a2.82 2.82 0 0 1 .6-3.58l2.83-2.32A2.82 2.82 0 0 1 11.18 3l.06.08.59.69L12 4l5.76 6.61L13.7 14.9l4.24 5.1Z"></path>
+            <path d="M4.17 9.25 3 15l5-1 9.74-1.61"></path>
+            <path d="m15 15 4 5"></path>
+            <path d="M20 13v7"></path>
+          </svg>
+          <span>App Store</span>
+        </a>
+        <a href="#" class="app-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="3 3 21 12 3 21 3 3"></polygon>
+          </svg>
+          <span>Google Play</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
