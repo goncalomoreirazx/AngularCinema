@@ -1,1 +1,220 @@
-<p>movie-details works!</p>
+<div class="movie-details-container">
+    <!-- Hero section with backdrop image -->
+    <div class="movie-backdrop" [style.background-image]="'url(' + movie.backdropUrl + ')'">
+      <div class="backdrop-content">
+        <div class="movie-poster">
+          <img [src]="movie.posterUrl" [alt]="movie.title + ' poster'">
+        </div>
+        <div class="movie-header">
+          <h1 class="movie-title">{{ movie.title }}</h1>
+          <p class="movie-tagline" *ngIf="movie.tagline">{{ movie.tagline }}</p>
+          <div class="movie-meta">
+            <div class="meta-item rating">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ffcc00" stroke="#ffcc00" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              <span class="rating-value">{{ movie.rating }}/10</span>
+            </div>
+            <div class="meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>{{ movie.releaseDate | date:'mediumDate' }}</span>
+            </div>
+            <div class="meta-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span>{{ movie.runtime | number }} minutes</span>
+            </div>
+            <div class="meta-item">{{ movie.genres.join(', ') }}</div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                <path d="M12 12v9"></path>
+                <path d="m8 17 4 4 4-4"></path>
+              </svg>
+              Book Tickets
+            </button>
+            <button class="btn btn-secondary" (click)="toggleTrailer()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Watch Trailer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Movie content section -->
+    <div class="movie-content">
+      <!-- Main content column -->
+      <div class="movie-main">
+        <!-- Synopsis -->
+        <section class="movie-synopsis">
+          <h2>Synopsis</h2>
+          <p>{{ movie.overview }}</p>
+        </section>
+  
+        <!-- Cast section -->
+        <section class="movie-cast">
+          <h2>Cast</h2>
+          <div class="cast-grid">
+            <div class="cast-card" *ngFor="let actor of movie.cast">
+              <div class="cast-photo">
+                <img [src]="actor.photoUrl" [alt]="actor.name">
+              </div>
+              <div class="cast-name">{{ actor.name }}</div>
+              <div class="cast-character">{{ actor.character }}</div>
+            </div>
+          </div>
+        </section>
+  
+        <!-- Trailer section -->
+        <section class="movie-trailer">
+          <h2>Trailer</h2>
+          <div class="trailer-container">
+            <!-- Show iframe if showTrailer is true, otherwise show the placeholder -->
+            <iframe *ngIf="showTrailer" [src]="safeTrailerUrl" 
+                    title="Movie Trailer" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen></iframe>
+            
+            <ng-container *ngIf="!showTrailer">
+              <img [src]="movie.trailerThumbnail" alt="Trailer thumbnail">
+              <div class="trailer-placeholder" (click)="toggleTrailer()">
+                <div class="play-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </section>
+  
+        <!-- Similar movies section -->
+        <section class="similar-movies">
+          <h2>Similar Movies</h2>
+          <div class="similar-grid">
+            <a class="similar-card" *ngFor="let similar of similarMovies" [routerLink]="['/movies', similar.id]">
+              <div class="similar-poster">
+                <img [src]="similar.posterUrl" [alt]="similar.title + ' poster'">
+              </div>
+              <div class="similar-title">{{ similar.title }}</div>
+            </a>
+          </div>
+        </section>
+      </div>
+  
+      <!-- Sidebar column -->
+      <div class="movie-sidebar">
+        <!-- Showtimes widget -->
+        <div class="showtimes">
+          <h3>Showtimes</h3>
+          <div class="date-selector">
+            <div 
+              *ngFor="let date of showDates; let i = index" 
+              class="date-option" 
+              [class.active]="selectedDateIndex === i"
+              (click)="selectDate(i)">
+              <span class="day">{{ date | date:'EEE' }}</span>
+              <span class="date">{{ date | date:'dd' }}</span>
+            </div>
+          </div>
+          <div class="time-slots">
+            <div class="cinema-venue" *ngFor="let venue of venues">
+              <div class="venue-name">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                {{ venue.name }}
+              </div>
+              <div class="slot-grid">
+                <div class="time-slot" *ngFor="let slot of venue.timeSlots">
+                  <div class="slot-time">{{ slot.time }}</div>
+                  <div class="slot-info">{{ slot.format }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Movie info box -->
+        <div class="movie-info-box">
+          <h3>Movie Info</h3>
+          <ul class="info-list">
+            <li>
+              <div class="info-label">Director</div>
+              <div class="info-value">{{ movie.director }}</div>
+            </li>
+            <li>
+              <div class="info-label">Writer</div>
+              <div class="info-value">{{ movie.writer }}</div>
+            </li>
+            <li>
+              <div class="info-label">Studio</div>
+              <div class="info-value">{{ movie.studio }}</div>
+            </li>
+            <li>
+              <div class="info-label">Language</div>
+              <div class="info-value">{{ movie.language }}</div>
+            </li>
+            <li>
+              <div class="info-label">Age Rating</div>
+              <div class="info-value">{{ movie.ageRating }}</div>
+            </li>
+            <li>
+              <div class="info-label">Budget</div>
+              <div class="info-value">{{ movie.budget | currency }}</div>
+            </li>
+            <li>
+              <div class="info-label">Box Office</div>
+              <div class="info-value">{{ movie.boxOffice | currency }}</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Reviews section -->
+    <section class="movie-reviews">
+      <h2>Reviews</h2>
+      <div class="reviews-grid">
+        <div class="review-card" *ngFor="let review of reviews">
+          <div class="review-header">
+            <div class="reviewer-avatar">
+              <img [src]="review.avatarUrl" [alt]="review.reviewerName">
+            </div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">{{ review.reviewerName }}</div>
+              <div class="review-date">{{ review.date | date:'mediumDate' }}</div>
+            </div>
+            <div class="review-rating">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ffcc00" stroke="#ffcc00" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              {{ review.rating }}/10
+            </div>
+          </div>
+          <div class="review-content" [class.expanded]="review.expanded">
+            {{ review.content }}
+          </div>
+          <span class="review-expand" (click)="toggleReviewExpand(review)">
+            {{ review.expanded ? 'Read Less' : 'Read More' }}
+          </span>
+        </div>
+      </div>
+      <div class="write-review">
+        <button class="btn-write-review">Write a Review</button>
+      </div>
+    </section>
+  </div>

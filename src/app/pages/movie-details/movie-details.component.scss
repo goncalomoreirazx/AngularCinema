@@ -1,0 +1,771 @@
+@use 'sass:color';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+// Variables
+$primary-color: #e50914;
+$secondary-color: #141414;
+$text-color: #ffffff;
+$text-color-dark: #333333;
+$text-muted: #999999;
+$accent-color: #e50914;
+$gradient-dark: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0.7));
+$card-bg: #1a1a1a;
+$card-hover: #222222;
+
+.movie-details-container {
+  font-family: 'Montserrat', sans-serif;
+  color: $text-color;
+  background-color: $secondary-color;
+  min-height: 100vh;
+  padding-top: 70px; // Account for fixed navbar
+}
+
+// Hero section with backdrop
+.movie-backdrop {
+  position: relative;
+  height: 70vh;
+  min-height: 500px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+                rgba(20, 20, 20, 0.2) 0%, 
+                rgba(20, 20, 20, 0.6) 60%, 
+                $secondary-color 100%);
+    z-index: 1;
+  }
+  
+  .backdrop-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .movie-poster {
+    width: 300px;
+    height: 450px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    margin-bottom: -75px; // Create overlap effect
+    flex-shrink: 0;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    @media (max-width: 768px) {
+      width: 220px;
+      height: 330px;
+      margin-bottom: -50px;
+    }
+    
+    @media (max-width: 576px) {
+      width: 160px;
+      height: 240px;
+      margin-bottom: -30px;
+    }
+  }
+  
+  .movie-header {
+    margin-left: 40px;
+    padding-bottom: 100px;
+    
+    .movie-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
+      
+      @media (max-width: 576px) {
+        font-size: 2rem;
+      }
+    }
+    
+    .movie-tagline {
+      font-size: 1.3rem;
+      font-style: italic;
+      opacity: 0.8;
+      margin-bottom: 1.5rem;
+      
+      @media (max-width: 768px) {
+        font-size: 1.1rem;
+      }
+    }
+    
+    .movie-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      
+      .meta-item {
+        display: flex;
+        align-items: center;
+        
+        svg {
+          margin-right: 8px;
+        }
+        
+        &.rating {
+          .rating-value {
+            color: #ffcc00;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      
+      @media (max-width: 576px) {
+        flex-direction: column;
+      }
+      
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        
+        &.btn-primary {
+          background-color: $accent-color;
+          color: $text-color;
+          border: none;
+          
+          &:hover {
+            background-color: color-mix(in srgb, $accent-color, black 10%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(229, 9, 20, 0.4);
+          }
+        }
+        
+        &.btn-secondary {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: $text-color;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+          }
+        }
+      }
+    }
+    
+    @media (max-width: 992px) {
+      padding-bottom: 60px;
+    }
+    
+    @media (max-width: 768px) {
+      margin-left: 30px;
+    }
+    
+    @media (max-width: 576px) {
+      margin-left: 20px;
+      max-width: calc(100% - 180px);
+      
+      .movie-meta {
+        gap: 0.8rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// Movie details content section
+.movie-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 100px 5% 50px;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 40px;
+  
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+    padding-top: 70px;
+  }
+  
+  @media (max-width: 768px) {
+    padding-top: 60px;
+  }
+  
+  @media (max-width: 576px) {
+    padding-top: 40px;
+  }
+  
+  // Left column
+  .movie-main {
+    .movie-synopsis {
+      margin-bottom: 40px;
+      
+      h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-left: 20px;
+        
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 4px;
+          background-color: $accent-color;
+          border-radius: 2px;
+        }
+      }
+      
+      p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+    
+    .movie-cast {
+      margin-bottom: 40px;
+      
+      h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-left: 20px;
+        
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 4px;
+          background-color: $accent-color;
+          border-radius: 2px;
+        }
+      }
+      
+      .cast-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 20px;
+        
+        .cast-card {
+          text-align: center;
+          
+          .cast-photo {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 10px;
+            
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+          
+          .cast-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+          }
+          
+          .cast-character {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+          }
+        }
+      }
+    }
+    
+    .movie-trailer {
+      margin-bottom: 40px;
+      
+      h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-left: 20px;
+        
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 4px;
+          background-color: $accent-color;
+          border-radius: 2px;
+        }
+      }
+      
+      .trailer-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; // 16:9 aspect ratio
+        height: 0;
+        overflow: hidden;
+        border-radius: 12px;
+        
+        iframe, img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border: none;
+          object-fit: cover;
+        }
+        
+        .trailer-placeholder {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0, 0, 0, 0.7);
+          
+          .play-button {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(229, 9, 20, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            
+            &:hover {
+              transform: scale(1.1);
+              background-color: $accent-color;
+            }
+            
+            svg {
+              width: 30px;
+              height: 30px;
+              fill: white;
+              margin-left: 5px; // Offset for play icon appearance
+            }
+          }
+        }
+      }
+    }
+    
+    .similar-movies {
+      h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-left: 20px;
+        
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 4px;
+          background-color: $accent-color;
+          border-radius: 2px;
+        }
+      }
+      
+      .similar-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 20px;
+        
+        .similar-card {
+          border-radius: 8px;
+          overflow: hidden;
+          transition: transform 0.3s ease;
+          
+          &:hover {
+            transform: translateY(-5px);
+            
+            .similar-poster img {
+              transform: scale(1.05);
+            }
+          }
+          
+          .similar-poster {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            overflow: hidden;
+            
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              transition: transform 0.5s ease;
+            }
+          }
+          
+          .similar-title {
+            padding: 10px;
+            background-color: $card-bg;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+  }
+  
+  // Right sidebar
+  .movie-sidebar {
+    .showtimes {
+      background-color: $card-bg;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      
+      h3 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+      
+      .date-selector {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+        
+        &::-webkit-scrollbar {
+          height: 5px;
+        }
+        
+        &::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 10px;
+        }
+        
+        .date-option {
+          min-width: 60px;
+          padding: 10px 0;
+          border-radius: 6px;
+          background-color: rgba(255, 255, 255, 0.1);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          
+          &.active {
+            background-color: $accent-color;
+          }
+          
+          &:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.2);
+          }
+          
+          .day {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+          }
+          
+          .date {
+            font-size: 1.2rem;
+            font-weight: 600;
+          }
+        }
+      }
+      
+      .time-slots {
+        .cinema-venue {
+          margin-bottom: 20px;
+          
+          .venue-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            
+            svg {
+              margin-right: 8px;
+              flex-shrink: 0;
+            }
+          }
+          
+          .slot-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            
+            @media (max-width: 1200px) and (min-width: 993px) {
+              grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .time-slot {
+              padding: 10px;
+              background-color: rgba(255, 255, 255, 0.1);
+              border-radius: 6px;
+              text-align: center;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              
+              &:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+              }
+              
+              .slot-time {
+                font-weight: 600;
+                font-size: 1rem;
+                margin-bottom: 5px;
+              }
+              
+              .slot-info {
+                font-size: 0.8rem;
+                color: rgba(255, 255, 255, 0.7);
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .movie-info-box {
+      background-color: $card-bg;
+      border-radius: 12px;
+      padding: 25px;
+      
+      h3 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+      
+      .info-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        
+        li {
+          padding: 12px 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          display: flex;
+          
+          &:last-child {
+            border-bottom: none;
+          }
+          
+          .info-label {
+            width: 120px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            flex-shrink: 0;
+          }
+          
+          .info-value {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Reviews section
+.movie-reviews {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 5% 50px;
+  
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-left: 20px;
+    
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background-color: $accent-color;
+      border-radius: 2px;
+    }
+  }
+  
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 20px;
+    
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+    
+    .review-card {
+      background-color: $card-bg;
+      border-radius: 12px;
+      padding: 20px;
+      
+      .review-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        
+        .reviewer-avatar {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          overflow: hidden;
+          margin-right: 15px;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        
+        .reviewer-info {
+          flex: 1;
+          
+          .reviewer-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+          }
+          
+          .review-date {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+          }
+        }
+        
+        .review-rating {
+          color: #ffcc00;
+          font-weight: 700;
+          font-size: 1.2rem;
+          display: flex;
+          align-items: center;
+          
+          svg {
+            margin-right: 5px;
+          }
+        }
+      }
+      
+      .review-content {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        margin-bottom: 15px;
+        color: rgba(255, 255, 255, 0.9);
+        
+        // For long reviews, add show more/less functionality with CSS
+        // (would be enhanced with JS in a real application)
+        max-height: 200px;
+        overflow: hidden;
+        position: relative;
+        
+        &.expanded {
+          max-height: none;
+        }
+        
+        &:not(.expanded)::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 60px;
+          background: linear-gradient(to top, $card-bg, transparent);
+        }
+      }
+      
+      .review-expand {
+        color: $accent-color;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: inline-block;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  .write-review {
+    margin-top: 30px;
+    text-align: center;
+    
+    .btn-write-review {
+      background-color: transparent;
+      color: $text-color;
+      border: 2px solid $accent-color;
+      padding: 0.8rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: $accent-color;
+        transform: translateY(-3px);
+      }
+    }
+  }
+}
