@@ -1,0 +1,115 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    padding: 20px;
+    background-color: #141414;
+  }
+  
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #ffffff;
+      
+      span {
+        color: #e50914;
+      }
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #ffffff;
+      }
+      
+      .form-control {
+        width: 100%;
+        padding: 12px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        color: #ffffff;
+        font-size: 16px;
+        
+        &:focus {
+          outline: none;
+          border-color: #e50914;
+          box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
+        }
+        
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.5);
+        }
+      }
+      
+      .error {
+        color: #e50914;
+        margin-top: 5px;
+        font-size: 14px;
+      }
+    }
+    
+    button {
+      width: 100%;
+      background-color: #e50914;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      
+      &:hover {
+        background-color: #c50812; // Fixed darker color
+      }
+      
+      &:disabled {
+        background-color: rgba(229, 9, 20, 0.5);
+        cursor: not-allowed;
+      }
+    }
+    
+    .error-message {
+      background-color: rgba(229, 9, 20, 0.2);
+      color: #e50914;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      text-align: center;
+      border: 1px solid rgba(229, 9, 20, 0.5);
+    }
+    
+    .demo-credentials {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      
+      p {
+        margin: 5px 0;
+      }
+      
+      code {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 2px 4px;
+        border-radius: 3px;
+        color: #e50914;
+      }
+    }
+  }

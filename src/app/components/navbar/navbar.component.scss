@@ -132,6 +132,72 @@ $gradient-dark: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0
         box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
       }
     }
+    
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      
+      .user-info {
+        .username {
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          color: $text-color;
+          
+          .admin-badge {
+            background-color: $accent-color;
+            color: $text-color;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            text-transform: uppercase;
+          }
+        }
+      }
+      
+      .btn-logout {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: $text-color;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        svg {
+          stroke-width: 2;
+        }
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
+    
+    .btn-login {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid $accent-color;
+      color: $accent-color;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: rgba(229, 9, 20, 0.1);
+        transform: translateY(-2px);
+      }
+    }
   }
 
   .mobile-menu-toggle {
