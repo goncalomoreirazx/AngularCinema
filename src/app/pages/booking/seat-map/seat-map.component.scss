@@ -1,0 +1,276 @@
+/* IMPORTANT: Delete all existing content in src/app/pages/booking/seat-map/seat-map.component.scss and replace with this */
+
+/* Variables must be at the very top */
+$primary-color: #e50914;
+$secondary-color: #141414;
+$text-color: #ffffff;
+$text-muted: #999999;
+$accent-color: #e50914;
+$card-bg: #1a1a1a;
+
+.seat-map-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.screen {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
+  height: 40px;
+  border-radius: 50% / 10px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .screen-text {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+  }
+}
+
+.seating-area {
+  display: flex;
+  margin-bottom: 2rem;
+}
+
+.row-label-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  
+  .row-label {
+    height: 36px;
+    width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 2px;
+  }
+}
+
+.seats-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+  
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+  }
+}
+
+.seat-row {
+  display: flex;
+  gap: 8px;
+}
+
+.seat-wrapper {
+  padding: 2px;
+}
+
+.seat {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+  position: relative;
+  margin-bottom: 2px;
+  
+  // Standard seats
+  &.seat-standard {
+    background-color: rgba(255, 255, 255, 0.15);
+    
+    &:hover:not(.seat-unavailable) {
+      background-color: rgba(255, 255, 255, 0.25);
+    }
+  }
+  
+  // Premium seats
+  &.seat-premium {
+    background-color: rgba(0, 128, 255, 0.2);
+    border: 1px solid rgba(0, 128, 255, 0.3);
+    
+    &:hover:not(.seat-unavailable) {
+      background-color: rgba(0, 128, 255, 0.3);
+    }
+  }
+  
+  // VIP seats
+  &.seat-vip {
+    background-color: rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    
+    &:hover:not(.seat-unavailable) {
+      background-color: rgba(255, 215, 0, 0.3);
+    }
+  }
+  
+  // Selected seats
+  &.seat-selected {
+    background-color: $accent-color;
+    border-color: $accent-color;
+    transform: scale(1.05);
+    
+    &.seat-premium, &.seat-vip {
+      border-color: $accent-color;
+    }
+  }
+  
+  // Unavailable seats
+  &.seat-unavailable {
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
+    position: relative;
+    
+    &::before, &::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 24px;
+      background-color: rgba(255, 255, 255, 0.3);
+      top: 6px;
+      left: 17px;
+      transform: rotate(45deg);
+    }
+    
+    &::after {
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+.selected-seats-info {
+  margin-top: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  
+  .info-label {
+    font-weight: 600;
+    margin-right: 10px;
+  }
+  
+  .selected-seats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    
+    .seat-badge {
+      background-color: $accent-color;
+      color: $text-color;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.seat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  border-radius: 8px;
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .seat-example {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      
+      &.seat-available {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      
+      &.seat-selected {
+        background-color: $accent-color;
+      }
+      
+      &.seat-unavailable {
+        background-color: rgba(255, 255, 255, 0.05);
+        position: relative;
+        
+        &::before, &::after {
+          content: '';
+          position: absolute;
+          width: 2px;
+          height: 20px;
+          background-color: rgba(255, 255, 255, 0.5);
+          top: 2px;
+          left: 11px;
+          transform: rotate(45deg);
+        }
+        
+        &::after {
+          transform: rotate(-45deg);
+        }
+      }
+      
+      &.seat-standard {
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+      
+      &.seat-premium {
+        background-color: rgba(0, 128, 255, 0.3);
+        border: 2px solid rgba(0, 128, 255, 0.5);
+      }
+      
+      &.seat-vip {
+        background-color: rgba(255, 215, 0, 0.3);
+        border: 2px solid rgba(255, 215, 0, 0.5);
+      }
+    }
+  }
+}

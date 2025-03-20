@@ -1,0 +1,45 @@
+<!-- src/app/pages/booking/showtime-selector/showtime-selector.component.html -->
+<div class="showtime-selector">
+    <div class="date-selector">
+      <div 
+        *ngFor="let date of uniqueDates" 
+        class="date-option" 
+        [class.active]="selectedDate === date"
+        (click)="selectDate(date)"
+      >
+        <div class="date-text">{{ formatDate(date) }}</div>
+        <div class="date-value">{{ date | date:'dd MMM' }}</div>
+      </div>
+    </div>
+    
+    <div class="time-selector">
+      <h3>Available Showtimes for {{ selectedDate | date:'EEEE, MMMM d' }}</h3>
+      
+      <div class="venue-groups">
+        <div class="venue-group" *ngFor="let venue of ['Main Hall', 'Premium Screen', 'IMAX Experience']">
+          <h4 class="venue-name">{{ venue }}</h4>
+          
+          <div class="time-slots">
+            <ng-container *ngFor="let showtime of getShowtimesForDate(selectedDate)">
+              <div 
+                *ngIf="showtime.venue === venue"
+                class="time-slot" 
+                [class.active]="isShowtimeSelected(showtime)"
+                (click)="selectShowtime(showtime)" 
+                [class.disabled]="showtime.seatsAvailable === 0"
+              >
+              <div class="time">{{ showtime.time }}</div>
+              <div class="format">{{ showtime.format }}</div>
+              <div class="availability">{{ showtime.seatsAvailable }} seats</div>
+            </div>
+            </ng-container>
+            
+            <div class="no-shows" *ngIf="hasNoShowtimes(venue)">
+              No showtimes available
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

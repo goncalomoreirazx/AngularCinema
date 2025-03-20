@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MovieCardComponent } from '../../components/movies/movie-card/movie-card.component';
+import { AuthService } from '../../services/auth.service';
 
 interface Movie {
   id: number;
@@ -87,7 +88,7 @@ export class MovieListComponent implements OnInit {
     }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,  public authService: AuthService ) {}
   
   ngOnInit(): void {
     // Initialize with the original data
@@ -124,4 +125,12 @@ export class MovieListComponent implements OnInit {
   navigateToDetails(id: number): void {
     this.router.navigate(['/movies', id]);
   }
+
+  navigateToBooking(movieId: number): void {
+    this.router.navigate(['/booking', movieId]);
+  }
+  redirectToLogin(): void {
+    this.router.navigate(['/login']);
+  }
+  
 }

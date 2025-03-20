@@ -1,0 +1,42 @@
+<div class="ticket-summary">
+    <div class="summary-section">
+      <h3>Movie</h3>
+      <div class="summary-detail">{{ movie?.title }}</div>
+    </div>
+    
+    <div class="summary-section" *ngIf="selectedShowtime">
+      <h3>Showtime</h3>
+      <div class="summary-detail">
+        <div>{{ formatDate(selectedShowtime.date) }}</div>
+        <div>{{ selectedShowtime.time }}</div>
+      </div>
+    </div>
+    
+    <div class="summary-section" *ngIf="selectedShowtime">
+      <h3>Venue</h3>
+      <div class="summary-detail">
+        <div>{{ selectedShowtime.venue }}</div>
+        <div>{{ selectedShowtime.format }}</div>
+      </div>
+    </div>
+    
+    <div class="summary-section" *ngIf="selectedSeats.length > 0">
+      <h3>Seats</h3>
+      <div class="summary-detail">{{ formatSeatIds() }}</div>
+    </div>
+    
+    <div class="summary-section" *ngIf="selectedSeats.length > 0">
+      <h3>Tickets</h3>
+      <div class="summary-detail tickets-breakdown">
+        <div class="ticket-type" *ngFor="let type of getSeatTypeCounts() | keyvalue">
+          <span class="ticket-label">{{ type.key | titlecase }} Seat</span>
+          <span class="ticket-count">{{ type.value.count }} x ${{ type.value.price }}.00</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="summary-total" *ngIf="selectedSeats.length > 0">
+      <div class="total-label">Total</div>
+      <div class="total-value">${{ totalAmount }}.00</div>
+    </div>
+  </div>

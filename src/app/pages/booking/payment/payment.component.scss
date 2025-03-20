@@ -1,0 +1,118 @@
+/* IMPORTANT: Delete all existing content in src/app/pages/booking/payment/payment.component.scss and replace with this */
+
+/* Variables must be at the very top */
+$primary-color: #e50914;
+$secondary-color: #141414;
+$text-color: #ffffff;
+$text-muted: #999999;
+$accent-color: #e50914;
+$card-bg: #1a1a1a;
+
+.payment-form {
+  width: 100%;
+  padding: 20px;
+}
+
+.form-error {
+  background-color: rgba(229, 9, 20, 0.1);
+  color: $accent-color;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(229, 9, 20, 0.3);
+}
+
+.form-group {
+  margin-bottom: 20px;
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: $text-color;
+    font-size: 1rem;
+    
+    &:focus {
+      outline: none;
+      border-color: $accent-color;
+    }
+    
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  
+  .form-group {
+    flex: 1;
+  }
+}
+
+.payment-actions {
+  margin-top: 25px;
+  
+  .btn-pay {
+    width: 100%;
+    background-color: $accent-color;
+    color: $text-color;
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover:not(:disabled) {
+      background-color: #d00812;
+    }
+    
+    &:disabled {
+      background-color: rgba(229, 9, 20, 0.5);
+      cursor: not-allowed;
+    }
+  }
+}
+
+.payment-security {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.test-card-info {
+  margin-top: 25px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 15px;
+  
+  .test-card-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  
+  .test-card-details {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    
+    div {
+      margin-bottom: 5px;
+    }
+  }
+}

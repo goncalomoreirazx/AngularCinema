@@ -1,0 +1,34 @@
+<div class="seat-map-container">
+    <div class="screen">
+      <div class="screen-text">SCREEN</div>
+    </div>
+    
+    <div class="seating-area">
+      <div class="row-label-container">
+        <div class="row-label" *ngFor="let row of uniqueRows">{{ row }}</div>
+      </div>
+      
+      <div class="seats-container">
+        <div class="seat-row" *ngFor="let row of uniqueRows">
+          <div class="seat-wrapper" *ngFor="let seat of getSeatsForRow(row)">
+            <div 
+              [class]="getSeatClass(seat)" 
+              (click)="onSeatClick(seat)"
+              [title]="seat.id + ' - ' + seat.type + ' ($' + seat.price + ')'"
+            >
+              {{ seat.number }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="selected-seats-info" *ngIf="ticketService.getSelectedSeats().length > 0">
+      <div class="info-label">Selected Seats:</div>
+      <div class="selected-seats">
+        <span class="seat-badge" *ngFor="let seat of ticketService.getSelectedSeats()">
+          {{ seat.id }}
+        </span>
+      </div>
+    </div>
+  </div>

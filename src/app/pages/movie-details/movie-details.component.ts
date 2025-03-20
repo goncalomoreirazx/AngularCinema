@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { AuthService } from '../../services/auth.service';
 
 interface Cast {
   id: number;
@@ -245,7 +246,9 @@ export class MovieDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public authService: AuthService // Add this line
+
   ) {}
 
   ngOnInit(): void {
@@ -281,5 +284,13 @@ export class MovieDetailsComponent implements OnInit {
 
   toggleReviewExpand(review: Review): void {
     review.expanded = !review.expanded;
+  }
+  bookTickets(): void {
+    console.log('Booking tickets for movie ID:', this.movieId);
+    this.router.navigate(['/booking', this.movieId]);
+  }
+  
+  promptLogin(): void {
+    this.router.navigate(['/login']);
   }
 }

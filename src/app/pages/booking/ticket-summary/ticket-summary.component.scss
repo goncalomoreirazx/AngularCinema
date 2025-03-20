@@ -1,0 +1,68 @@
+/* IMPORTANT: Delete all existing content in src/app/pages/booking/ticket-summary/ticket-summary.component.scss and replace with this */
+
+/* Variables must be at the very top */
+$primary-color: #e50914;
+$secondary-color: #141414;
+$text-color: #ffffff;
+$text-muted: #999999;
+$accent-color: #e50914;
+$card-bg: #1a1a1a;
+
+.ticket-summary {
+  width: 100%;
+  padding: 20px;
+}
+
+.summary-section {
+  margin-bottom: 20px;
+  
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+  }
+  
+  .summary-detail {
+    font-size: 1.1rem;
+    
+    div + div {
+      margin-top: 5px;
+    }
+  }
+  
+  .tickets-breakdown {
+    .ticket-type {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      
+      .ticket-label {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      
+      .ticket-count {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.summary-total {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-between;
+  
+  .total-label {
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+  
+  .total-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $accent-color;
+  }
+}
