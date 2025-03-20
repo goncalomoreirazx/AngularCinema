@@ -4,8 +4,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TicketService, Seat, Showtime, Booking } from '../../services/ticket.service';
-import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { FooterComponent } from '../../components/footer/footer.component';
 import { SeatMapComponent } from './seat-map/seat-map.component';
 import { ShowtimeSelectorComponent } from './showtime-selector/showtime-selector.component';
 import { TicketSummaryComponent } from './ticket-summary/ticket-summary.component';
@@ -17,8 +15,6 @@ import { BookingConfirmationComponent } from './booking-confirmation/booking-con
   standalone: true,
   imports: [
     CommonModule,
-    NavbarComponent,
-    FooterComponent,
     SeatMapComponent,
     ShowtimeSelectorComponent,
     TicketSummaryComponent,
@@ -156,13 +152,25 @@ export class BookingComponent implements OnInit, OnDestroy {
 
   onPaymentComplete(): void {
     console.log('Payment completed, advancing to confirmation step');
-    this.currentStep++;
+    this.currentStep = 4; // Explicitly set to step 4 (confirmation)
     console.log('Current step after payment:', this.currentStep);
+    
+    // Make sure the booking is available
+    console.log('Booking object:', this.booking);
+    
     // Force a check of booking status
     if (this.booking && this.booking.paymentStatus === 'completed') {
       console.log('Setting bookingComplete flag to true');
       this.bookingComplete = true;
+    } else {
+      console.warn('Booking is not completed yet or is missing');
     }
+    
+    // Force change detection
+    setTimeout(() => {
+      console.log('Verification - Current step:', this.currentStep);
+      console.log('Verification - Booking:', this.booking);
+    }, 0);
   }
 
   startNewBooking(): void {

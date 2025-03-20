@@ -193,6 +193,7 @@ export class TicketService {
     this.bookingSubject.next(booking);
   }
 
+   // Process payment (mock)
   // Process payment (mock)
   processPayment(): Observable<boolean> {
     return of(true).pipe(
@@ -202,13 +203,28 @@ export class TicketService {
         console.log('Processing payment for booking:', booking);
         
         if (booking) {
-          // Update booking with completed status
+          // Update booking with completed status and ensure it has an ID
           const updatedBooking = {
             ...booking,
+            id: booking.id || Math.floor(Math.random() * 10000),
             paymentStatus: 'completed' as const
           };
+          
+          // Make sure seats array is valid
+          if (!updatedBooking.seats || !Array.isArray(updatedBooking.seats)) {
+            console.error('Invalid seats array in booking:', updatedBooking.seats);
+            updatedBooking.seats = [];
+          }
+          
           console.log('Payment successful, updating booking:', updatedBooking);
           this.bookingSubject.next(updatedBooking);
+          
+          // Store the booking in localStorage for debugging purposes
+          try {
+            localStorage.setItem('lastBooking', JSON.stringify(updatedBooking));
+          } catch (error) {
+            console.warn('Could not store booking in localStorage:', error);
+          }
         } else {
           console.error('Cannot process payment: no booking found');
         }

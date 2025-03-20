@@ -44,16 +44,29 @@ export class PaymentComponent {
     this.paymentError = '';
     
     // Call service to process payment
-    this.ticketService.processPayment().subscribe(
-      success => {
+    this.ticketService.processPayment().subscribe({
+      next: (success) => {
         console.log('Payment processed:', success);
+        this.isProcessing = false;
+        
         if (success) {
-          console.log('Payment successful, emitting completion event');
-          this.paymentComplete.emit();
+          console.log('Payment successful, getting current booking state before emitting completion event');
+          console.log('Current booking:', this.booking);
+          
+          // Small delay to ensure booking state is updated
+          setTimeout(() => {
+            console.log('Emitting payment complete event');
+            this.paymentComplete.emit();
+          }, 100);
         } else {
           this.paymentError = 'Payment processing failed. Please try again.';
         }
+      },
+      error: (error) => {
+        console.error('Payment error:', error);
+        this.isProcessing = false;
+        this.paymentError = 'An error occurred during payment processing. Please try again.';
       }
-    );
+    });
   }
 }

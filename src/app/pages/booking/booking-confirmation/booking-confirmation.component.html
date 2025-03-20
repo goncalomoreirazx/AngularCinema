@@ -9,31 +9,39 @@
   <h1 class="confirmation-title">Booking Confirmed!</h1>
   <p class="confirmation-message">Your tickets have been successfully booked.</p>
   
-  <div class="ticket" *ngIf="booking">
+  <!-- Debug info - will only show in development -->
+  <div style="background-color: #333; padding: 10px; margin: 10px 0; border-radius: 4px; font-size: 12px;" *ngIf="booking">
+    <p>Debug - Booking ID: {{booking.id}}</p>
+    <p>Debug - Payment Status: {{booking.paymentStatus}}</p>
+    <p>Debug - Seats Count: {{booking.seats ? booking.seats.length : 0}}</p>
+  </div>
+  
+  <!-- Ticket display with more explicit condition -->
+  <div class="ticket" *ngIf="booking && booking.id">
     <div class="ticket-header">
       <div class="movie-info">
-        <h2>{{ booking.movieTitle }}</h2>
-        <p>{{ formatDate(booking.showtime.split(' ')[0]) }}</p>
+        <h2>{{ booking.movieTitle || 'Movie Title Missing' }}</h2>
+        <p>{{ booking.showtime ? formatDate(booking.showtime.split(' ')[0]) : 'Date Missing' }}</p>
       </div>
       <div class="ticket-image">
-        <img [src]="booking.moviePoster" [alt]="booking.movieTitle">
+        <img [src]="booking.moviePoster || '/assets/images/placeholder.jpg'" [alt]="booking.movieTitle || 'Movie Poster'">
       </div>
     </div>
     
     <div class="ticket-body">
       <div class="ticket-detail">
         <div class="detail-label">Booking ID</div>
-        <div class="detail-value">{{ booking.id }}</div>
+        <div class="detail-value">{{ booking.id || 'ID Missing' }}</div>
       </div>
       
       <div class="ticket-detail">
         <div class="detail-label">Showtime</div>
-        <div class="detail-value">{{ booking.showtime }}</div>
+        <div class="detail-value">{{ booking.showtime || 'Showtime Missing' }}</div>
       </div>
       
       <div class="ticket-detail">
         <div class="detail-label">Venue</div>
-        <div class="detail-value">{{ booking.venue }}</div>
+        <div class="detail-value">{{ booking.venue || 'Venue Missing' }}</div>
       </div>
       
       <div class="ticket-detail">
@@ -43,7 +51,7 @@
       
       <div class="ticket-detail total">
         <div class="detail-label">Total Paid</div>
-        <div class="detail-value">${{ booking.totalAmount }}.00</div>
+        <div class="detail-value">${{ booking.totalAmount || 0 }}.00</div>
       </div>
     </div>
     
@@ -100,6 +108,12 @@
         <p>Arrive 15 minutes before showtime.</p>
       </div>
     </div>
+  </div>
+  
+  <!-- Fallback message if booking data is missing -->
+  <div *ngIf="!booking || !booking.id" class="error-message" style="background-color: rgba(255, 87, 87, 0.2); padding:
+15px; border-radius: 8px; margin: 20px 0; color: #fff; text-align: center;">
+    <p>We're having trouble displaying your ticket. Please contact customer support with reference ID: {{ getRandomReferenceId() }}</p>
   </div>
   
   <div class="confirmation-actions">
