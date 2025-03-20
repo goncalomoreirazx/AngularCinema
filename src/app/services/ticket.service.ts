@@ -1,5 +1,7 @@
+// src/app/services/ticket.service.ts
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 export interface Seat {
@@ -168,6 +170,7 @@ export class TicketService {
     const selectedSeats = this.selectedSeatsSubject.value;
     
     if (!user || !selectedShowtime || selectedSeats.length === 0) {
+      console.error('Cannot create booking: missing user, showtime, or seats');
       return;
     }
     
@@ -186,46 +189,31 @@ export class TicketService {
       bookingDate: new Date().toISOString()
     };
     
+    console.log('Creating new booking:', booking);
     this.bookingSubject.next(booking);
   }
 
   // Process payment (mock)
   processPayment(): Observable<boolean> {
-    return new Observable(observer => {
-      // Simulate API call with timeout
-      setTimeout(() => {
+    return of(true).pipe(
+      delay(1500),
+      tap(() => {
         const booking = this.bookingSubject.value;
-        
-        // Add more detailed logging
         console.log('Processing payment for booking:', booking);
-        console.log('User logged in:', this.authService.isLoggedIn());
-        console.log('Current user:', this.authService.getCurrentUser());
         
         if (booking) {
-          // Update booking status
+          // Update booking with completed status
           const updatedBooking = {
             ...booking,
-            paymentStatus: 'completed' as 'pending' | 'completed' | 'failed'
+            paymentStatus: 'completed' as const
           };
+          console.log('Payment successful, updating booking:', updatedBooking);
           this.bookingSubject.next(updatedBooking);
-          observer.next(true);
         } else {
-          // If no booking found, try to recreate it
-          const user = this.authService.getCurrentUser();
-          const selectedShowtime = this.selectedShowtimeSubject.value;
-          const selectedSeats = this.selectedSeatsSubject.value;
-          
-          // Log why booking creation might be failing
-          if (!user) console.error('Payment failed: No user logged in');
-          if (!selectedShowtime) console.error('Payment failed: No showtime selected');
-          if (!selectedSeats || selectedSeats.length === 0) console.error('Payment failed: No seats selected');
-          
-          // Force a successful payment for demo purposes
-          observer.next(true);
+          console.error('Cannot process payment: no booking found');
         }
-        observer.complete();
-      }, 1500);
-    });
+      })
+    );
   }
 
   // Reset booking

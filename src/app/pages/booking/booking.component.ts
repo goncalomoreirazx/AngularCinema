@@ -77,10 +77,10 @@ export class BookingComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.ticketService.booking$.subscribe(booking => {
         this.booking = booking;
-        // Very important: This sets the bookingComplete flag when payment is completed
+        // Set bookingComplete flag when payment is completed
         if (booking && booking.paymentStatus === 'completed') {
+          console.log('Booking complete detected!', booking);
           this.bookingComplete = true;
-          console.log('Booking complete!', booking);
         }
       })
     );
@@ -123,9 +123,6 @@ export class BookingComponent implements OnInit, OnDestroy {
     if (this.currentStep === 3) {
       // Create booking
       console.log('Creating booking for movie:', this.movie);
-      console.log('Selected showtime:', this.selectedShowtime);
-      console.log('Selected seats:', this.selectedSeats);
-      
       this.ticketService.createBooking(this.movieId, this.movie.title, this.movie.posterUrl);
       
       // Verify booking was created
@@ -139,6 +136,7 @@ export class BookingComponent implements OnInit, OnDestroy {
   
     if (this.currentStep < this.totalSteps) {
       this.currentStep++;
+      console.log('Advanced to step:', this.currentStep);
     }
   }
 
@@ -157,7 +155,14 @@ export class BookingComponent implements OnInit, OnDestroy {
   }
 
   onPaymentComplete(): void {
+    console.log('Payment completed, advancing to confirmation step');
     this.currentStep++;
+    console.log('Current step after payment:', this.currentStep);
+    // Force a check of booking status
+    if (this.booking && this.booking.paymentStatus === 'completed') {
+      console.log('Setting bookingComplete flag to true');
+      this.bookingComplete = true;
+    }
   }
 
   startNewBooking(): void {
