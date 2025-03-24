@@ -1,0 +1,214 @@
+<div class="admin-reviews-container">
+    <div class="admin-header">
+      <h1>Review Management</h1>
+      <p>Moderate user reviews and ratings</p>
+    </div>
+  
+    <div class="reviews-dashboard">
+      <!-- Reviews List Section -->
+      <div class="reviews-list-section">
+        <div class="section-header">
+          <h2>User Reviews</h2>
+          <div class="filters">
+            <div class="filter-group">
+              <label for="statusFilter">Status:</label>
+              <select id="statusFilter" [(ngModel)]="statusFilter" (change)="onStatusFilterChange()">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label for="movieFilter">Movie:</label>
+              <input 
+                type="text" 
+                id="movieFilter" 
+                placeholder="Filter by movie title" 
+                [(ngModel)]="movieFilter"
+                (input)="onMovieFilterChange()">
+            </div>
+            
+            <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+          </div>
+        </div>
+  
+        <div class="loading-spinner" *ngIf="isLoading">
+          <div class="spinner"></div>
+          <p>Loading reviews...</p>
+        </div>
+  
+        <div class="reviews-table-container" *ngIf="!isLoading">
+          <table class="reviews-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Movie</th>
+                <th>Rating</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let review of filteredReviews" (click)="viewReview(review)" [class.selected]="selectedReview?.id === review.id">
+                <td class="user-cell">
+                  <div class="user-info">
+                    <img [src]="review.userAvatar" [alt]="review.userName" class="user-avatar">
+                    <span>{{ review.userName }}</span>
+                  </div>
+                </td>
+                <td>{{ review.movieTitle }}</td>
+                <td class="rating-cell">
+                  <div class="stars">{{ getRatingStars(review.rating) }}</div>
+                  <span>{{ review.rating }}/5</span>
+                </td>
+                <td>{{ formatDate(review.date) }}</td>
+                <td>
+                  <span class="status-badge" [class]="review.status">
+                    {{ getStatusLabel(review.status) }}
+                  </span>
+                </td>
+                <td class="actions-cell" (click)="$event.stopPropagation()">
+                  <button class="btn-approve" 
+                          [disabled]="review.status === 'approved'"
+                          (click)="updateReviewStatus(review, 'approved')" 
+                          title="Approve Review">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                  </button>
+                  <button class="btn-reject" 
+                          [disabled]="review.status === 'rejected'"
+                          (click)="updateReviewStatus(review, 'rejected')" 
+                          title="Reject Review">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="15" y1="9" x2="9" y2="15"></line>
+                      <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                  </button>
+                  <button class="btn-delete" 
+                          (click)="confirmDelete(review.id)" 
+                          title="Delete Review">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      <line x1="10" y1="11" x2="10" y2="17"></line>
+                      <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <div class="no-reviews" *ngIf="filteredReviews.length === 0">
+            <p>No reviews found matching your filters.</p>
+            <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Review Details Section -->
+      <div class="review-details-section" *ngIf="selectedReview">
+        <div class="section-header">
+          <h2>Review Details</h2>
+          <button class="btn-close" (click)="closeReviewDetails()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+  
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-meta">
+              <div class="user-info">
+                <img [src]="selectedReview.userAvatar" [alt]="selectedReview.userName" class="user-avatar">
+                <div class="user-details">
+                  <h3 class="user-name">{{ selectedReview.userName }}</h3>
+                  <span class="review-date">{{ formatDate(selectedReview.date) }}</span>
+                </div>
+              </div>
+              <div class="movie-info">
+                <span class="label">Movie:</span>
+                <span class="movie-title">{{ selectedReview.movieTitle }}</span>
+              </div>
+            </div>
+            <div class="review-rating">
+              <div class="stars">{{ getRatingStars(selectedReview.rating) }}</div>
+              <span class="rating-value">{{ selectedReview.rating }}/5</span>
+            </div>
+          </div>
+  
+          <div class="review-content">
+            <p>{{ selectedReview.content }}</p>
+          </div>
+  
+          <div class="review-status">
+            <span class="status-label">Status:</span>
+            <span class="status-badge" [class]="selectedReview.status">
+              {{ getStatusLabel(selectedReview.status) }}
+            </span>
+          </div>
+  
+          <div class="review-actions">
+            <button class="btn-approve" 
+                    [disabled]="selectedReview.status === 'approved'"
+                    (click)="updateReviewStatus(selectedReview, 'approved')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              Approve
+            </button>
+            <button class="btn-reject" 
+                    [disabled]="selectedReview.status === 'rejected'"
+                    (click)="updateReviewStatus(selectedReview, 'rejected')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+              </svg>
+              Reject
+            </button>
+            <button class="btn-pending" 
+                    [disabled]="selectedReview.status === 'pending'"
+                    (click)="updateReviewStatus(selectedReview, 'pending')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              Mark as Pending
+            </button>
+            <button class="btn-delete" (click)="confirmDelete(selectedReview.id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+      <div class="modal-content">
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete this review? This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+          <button class="btn-danger" (click)="deleteReview()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>

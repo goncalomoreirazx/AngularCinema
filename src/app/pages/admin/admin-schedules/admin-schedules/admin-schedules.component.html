@@ -1,0 +1,206 @@
+<div class="admin-schedules-container">
+    <div class="admin-header">
+      <h1>Schedule Management</h1>
+      <p>Manage movie showtimes and schedules</p>
+    </div>
+  
+    <!-- Showtime Form Section -->
+    <div class="showtime-form-section">
+      <div class="form-header">
+        <h2>{{ isEditing ? 'Edit Showtime' : 'Add New Showtime' }}</h2>
+        <button *ngIf="!isEditing" class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+      </div>
+  
+      <div class="form-message" *ngIf="formMessage.text" [class.error]="formMessage.type === 'error'" [class.success]="formMessage.type === 'success'">
+        {{ formMessage.text }}
+      </div>
+  
+      <form [formGroup]="showtimeForm" (ngSubmit)="saveShowtime()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="movieId">Movie*</label>
+            <select id="movieId" formControlName="movieId">
+              <option value="">Select a movie</option>
+              <option *ngFor="let movie of movies" [value]="movie.id">{{ movie.title }}</option>
+            </select>
+            <div class="error-message" *ngIf="showtimeForm.get('movieId')?.invalid && showtimeForm.get('movieId')?.touched">
+              Movie is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="date">Date*</label>
+            <input type="date" id="date" formControlName="date">
+            <div class="error-message" *ngIf="showtimeForm.get('date')?.invalid && showtimeForm.get('date')?.touched">
+              Date is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="time">Start Time*</label>
+            <input type="time" id="time" formControlName="time">
+            <div class="error-message" *ngIf="showtimeForm.get('time')?.invalid && showtimeForm.get('time')?.touched">
+              Start time is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="venue">Venue*</label>
+            <select id="venue" formControlName="venue">
+              <option value="">Select a venue</option>
+              <option *ngFor="let venue of venues" [value]="venue">{{ venue }}</option>
+            </select>
+            <div class="error-message" *ngIf="showtimeForm.get('venue')?.invalid && showtimeForm.get('venue')?.touched">
+              Venue is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="format">Format*</label>
+            <select id="format" formControlName="format">
+              <option value="">Select a format</option>
+              <option *ngFor="let format of formats" [value]="format">{{ format }}</option>
+            </select>
+            <div class="error-message" *ngIf="showtimeForm.get('format')?.invalid && showtimeForm.get('format')?.touched">
+              Format is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="price">Ticket Price* ($)</label>
+            <input type="number" id="price" formControlName="price" min="1" step="0.01">
+            <div class="error-message" *ngIf="showtimeForm.get('price')?.invalid && showtimeForm.get('price')?.touched">
+              Valid ticket price is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="totalSeats">Total Seats*</label>
+            <input type="number" id="totalSeats" formControlName="totalSeats" min="1">
+            <div class="error-message" *ngIf="showtimeForm.get('totalSeats')?.invalid && showtimeForm.get('totalSeats')?.touched">
+              Valid total seats is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="availableSeats">Available Seats*</label>
+            <input type="number" id="availableSeats" formControlName="availableSeats" min="0">
+            <div class="error-message" *ngIf="showtimeForm.get('availableSeats')?.invalid && showtimeForm.get('availableSeats')?.touched">
+              Valid available seats is required
+            </div>
+          </div>
+        </div>
+  
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+          <button type="submit" class="btn-primary">{{ isEditing ? 'Update Showtime' : 'Add Showtime' }}</button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Showtimes List Section -->
+    <div class="showtimes-list-section">
+      <div class="section-header">
+        <h2>Scheduled Showtimes</h2>
+        <button class="btn-add" (click)="newShowtime()">Add New Showtime</button>
+      </div>
+  
+      <div class="filters">
+        <div class="filter-group">
+          <label for="dateFilter">Date:</label>
+          <select id="dateFilter" [(ngModel)]="dateFilter" (change)="onDateFilterChange()">
+            <option value="">All Dates</option>
+            <option *ngFor="let date of uniqueDates" [value]="date">{{ formatDate(date) }}</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="movieFilter">Movie:</label>
+          <select id="movieFilter" [(ngModel)]="movieFilter" (change)="onMovieFilterChange()">
+            <option value="">All Movies</option>
+            <option *ngFor="let movie of movies" [value]="movie.id">{{ movie.title }}</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="venueFilter">Venue:</label>
+          <select id="venueFilter" [(ngModel)]="venueFilter" (change)="onVenueFilterChange()">
+            <option value="">All Venues</option>
+            <option *ngFor="let venue of venues" [value]="venue">{{ venue }}</option>
+          </select>
+        </div>
+        
+        <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+      </div>
+  
+      <div class="loading-spinner" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading showtimes...</p>
+      </div>
+  
+      <div class="showtimes-table-container" *ngIf="!isLoading">
+        <table class="showtimes-table">
+          <thead>
+            <tr>
+              <th>Movie</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Venue</th>
+              <th>Format</th>
+              <th>Price</th>
+              <th>Seats</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let showtime of filteredShowtimes">
+              <td class="movie-cell">
+                <div class="movie-info">
+                  <img [src]="showtime.posterUrl" [alt]="showtime.movieTitle" class="movie-thumbnail">
+                  <span class="movie-title">{{ showtime.movieTitle }}</span>
+                </div>
+              </td>
+              <td>{{ formatDate(showtime.date) }}</td>
+              <td>{{ showtime.time }} - {{ showtime.endTime }}</td>
+              <td>{{ showtime.venue }}</td>
+              <td>{{ showtime.format }}</td>
+              <td>${{ showtime.price.toFixed(2) }}</td>
+              <td>{{ showtime.availableSeats }} / {{ showtime.totalSeats }}</td>
+              <td class="actions-cell">
+                <button class="btn-edit" (click)="editShowtime(showtime)" title="Edit Showtime">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                  </svg>
+                </button>
+                <button class="btn-delete" (click)="confirmDelete(showtime.id)" title="Delete Showtime">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <div class="no-showtimes" *ngIf="filteredShowtimes.length === 0">
+          <p>No showtimes found matching your filters.</p>
+          <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+      <div class="modal-content">
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete this showtime? This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+          <button class="btn-danger" (click)="deleteShowtime()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>

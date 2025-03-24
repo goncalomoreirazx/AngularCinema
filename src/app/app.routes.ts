@@ -5,6 +5,9 @@ import { MovieListComponent } from './pages/movie-list/movie-list.component';
 import { MovieDetailsComponent } from './pages/movie-details/movie-details.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { AdminMoviesComponent } from './pages/admin/admin-movies/admin-movies/admin-movies.component';
+import { AdminReviewsComponent } from './pages/admin/admin-reviews/admin-reviews/admin-reviews.component';
+import { AdminSchedulesComponent } from './pages/admin/admin-schedules/admin-schedules/admin-schedules.component';
 import { BookingComponent } from './pages/booking/booking.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
@@ -23,6 +26,21 @@ export const routes: Routes = [
     path: 'admin', 
     component: AdminComponent, 
     canActivate: [AuthGuard, AdminGuard] 
+  },
+  {
+    path: 'admin/movies',
+    component: AdminMoviesComponent,
+    canActivate: [AuthGuard, AdminGuard]
+  },
+  {
+    path: 'admin/reviews',
+    component: AdminReviewsComponent,
+    canActivate: [AuthGuard, AdminGuard]
+  },
+  {
+    path: 'admin/schedules',
+    component: AdminSchedulesComponent,
+    canActivate: [AuthGuard, AdminGuard]
   },
   { path: '**', redirectTo: '' }
 ];
