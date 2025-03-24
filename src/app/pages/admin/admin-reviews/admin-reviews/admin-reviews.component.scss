@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :host {
@@ -7,6 +8,8 @@
   min-height: 100vh;
   width: 100%;
 }
+
+
 
 .admin-reviews-container {
   max-width: 1400px;
@@ -76,7 +79,7 @@
           font-weight: 500;
         }
         
-        select, input {
+        select, input, option {
           padding: 0.6rem;
           background-color: rgba(255, 255, 255, 0.1);
           border: 1px solid rgba(255, 255, 255, 0.2);
@@ -94,6 +97,14 @@
         input {
           min-width: 200px;
         }
+
+        option {
+          background-color: #1a1a1a; /* Match your form background */
+          color: #ffffff;
+          padding: 8px;
+        } 
+
+
       }
       
       .btn-clear {
@@ -564,7 +575,7 @@
           color: #ffffff;
           
           &:hover {
-            background-color: darken(#e74c3c, 8%);
+            background-color: color.adjust(#e74c3c, $lightness: -8%);
           }
         }
       }

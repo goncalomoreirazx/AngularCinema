@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :host {
@@ -150,7 +151,7 @@
         color: #ffffff;
         
         &:hover {
-          background-color: darken(#e50914, 8%);
+          background-color: color.adjust(#e50914, $lightness: -8%);
           transform: translateY(-2px);
         }
       }
@@ -197,7 +198,7 @@
       transition: all 0.3s ease;
       
       &:hover {
-        background-color: darken(#e50914, 8%);
+        background-color: color.adjust(#e50914, $lightness: -8%);
         transform: translateY(-2px);
       }
     }
@@ -438,7 +439,7 @@
           color: #ffffff;
           
           &:hover {
-            background-color: darken(#e74c3c, 8%);
+            background-color: color.adjust(#e74c3c, $lightness: -8%);
           }
         }
       }
