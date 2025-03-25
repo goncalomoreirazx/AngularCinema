@@ -236,6 +236,12 @@
           border-color: #e50914;
         }
       }
+
+      option {
+        background-color: #1a1a1a; /* Match your form background */
+        color: #ffffff;
+        padding: 8px;
+      }
       
       input {
         min-width: 250px;
