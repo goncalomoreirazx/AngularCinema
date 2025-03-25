@@ -1,1 +1,310 @@
-<p>admin-tickets works!</p>
+<div class="admin-tickets-container">
+    <div class="admin-header">
+      <h1>Ticket Management</h1>
+      <p>View and manage cinema ticket bookings</p>
+    </div>
+  
+    <!-- Action Message -->
+    <div class="action-message" *ngIf="actionMessage.text" [class.success]="actionMessage.type === 'success'" [class.error]="actionMessage.type === 'error'">
+      {{ actionMessage.text }}
+    </div>
+  
+    <div class="tickets-dashboard">
+      <!-- Tickets List Section -->
+      <div class="tickets-list-section">
+        <div class="section-header">
+          <h2>Ticket Bookings</h2>
+          <div class="filters">
+            <div class="filter-group">
+              <label for="statusFilter">Status:</label>
+              <select id="statusFilter" [(ngModel)]="statusFilter" (change)="onStatusFilterChange()">
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="used">Used</option>
+                <option value="canceled">Canceled</option>
+                <option value="refunded">Refunded</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label for="movieFilter">Movie:</label>
+              <input 
+                type="text" 
+                id="movieFilter" 
+                placeholder="Filter by movie title" 
+                [(ngModel)]="movieFilter"
+                (input)="onMovieFilterChange()">
+            </div>
+            
+            <div class="filter-group">
+              <label for="dateFilter">Date:</label>
+              <input 
+                type="date" 
+                id="dateFilter" 
+                [(ngModel)]="dateFilter"
+                (change)="onDateFilterChange()">
+            </div>
+            
+            <div class="filter-group">
+              <label for="userFilter">User:</label>
+              <input 
+                type="text" 
+                id="userFilter" 
+                placeholder="Filter by user name/email" 
+                [(ngModel)]="userFilter"
+                (input)="onUserFilterChange()">
+            </div>
+            
+            <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+          </div>
+        </div>
+  
+        <div class="loading-spinner" *ngIf="isLoading">
+          <div class="spinner"></div>
+          <p>Loading tickets...</p>
+        </div>
+  
+        <div class="tickets-table-container" *ngIf="!isLoading">
+          <table class="tickets-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Movie</th>
+                <th>User</th>
+                <th>Showtime</th>
+                <th>Seats</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ticket of filteredTickets" (click)="viewTicket(ticket)" [class.selected]="selectedTicket?.id === ticket.id">
+                <td class="ticket-id">{{ ticket.id }}</td>
+                <td class="movie-cell">
+                  <div class="movie-info">
+                    <img [src]="ticket.posterUrl" [alt]="ticket.movieTitle" class="movie-thumbnail">
+                    <span class="movie-title">{{ ticket.movieTitle }}</span>
+                  </div>
+                </td>
+                <td class="user-cell">
+                  <div class="user-info">
+                    <span class="user-name">{{ ticket.userName }}</span>
+                    <span class="user-email">{{ ticket.userEmail }}</span>
+                  </div>
+                </td>
+                <td>{{ formatShowtime(ticket.showtime) }}</td>
+                <td>{{ ticket.seats.join(', ') }}</td>
+                <td>${{ ticket.totalAmount.toFixed(2) }}</td>
+                <td>
+                  <span class="status-badge" [class]="getStatusClass(ticket.status)">
+                    {{ getStatusLabel(ticket.status) }}
+                  </span>
+                </td>
+                <td class="actions-cell" (click)="$event.stopPropagation()">
+                  <button class="btn-primary" title="View Details" (click)="viewTicket(ticket)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </button>
+                  <button 
+                    class="btn-refund" 
+                    title="Refund Ticket" 
+                    [disabled]="ticket.status === 'refunded' || ticket.status === 'canceled'"
+                    (click)="confirmRefund(ticket.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                  </button>
+                  <button class="btn-delete" title="Delete Ticket" (click)="confirmDelete(ticket.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      <line x1="10" y1="11" x2="10" y2="17"></line>
+                      <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <div class="no-tickets" *ngIf="filteredTickets.length === 0">
+            <p>No tickets found matching your filters.</p>
+            <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Ticket Details Section -->
+      <div class="ticket-details-section" *ngIf="selectedTicket">
+        <div class="section-header">
+          <h2>Ticket Details</h2>
+          <button class="btn-close" (click)="closeTicketDetails()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+  
+        <div class="ticket-card">
+          <div class="ticket-header">
+            <div class="movie-info">
+              <img [src]="selectedTicket.posterUrl" [alt]="selectedTicket.movieTitle" class="movie-poster">
+              <div>
+                <h3>{{ selectedTicket.movieTitle }}</h3>
+                <p class="showtime">{{ formatShowtime(selectedTicket.showtime) }}</p>
+                <p class="venue">{{ selectedTicket.venue }}</p>
+              </div>
+            </div>
+            <div class="ticket-status">
+              <span class="status-badge" [class]="getStatusClass(selectedTicket.status)">
+                {{ getStatusLabel(selectedTicket.status) }}
+              </span>
+            </div>
+          </div>
+  
+          <div class="ticket-details">
+            <div class="detail-group">
+              <div class="detail-item">
+                <label>Ticket ID:</label>
+                <span>{{ selectedTicket.id }}</span>
+              </div>
+              <div class="detail-item">
+                <label>Booking ID:</label>
+                <span>{{ selectedTicket.bookingId }}</span>
+              </div>
+            </div>
+  
+            <div class="detail-group">
+              <div class="detail-item">
+                <label>User:</label>
+                <span>{{ selectedTicket.userName }} ({{ selectedTicket.userEmail }})</span>
+              </div>
+              <div class="detail-item">
+                <label>User ID:</label>
+                <span>{{ selectedTicket.userId }}</span>
+              </div>
+            </div>
+  
+            <div class="detail-group">
+              <div class="detail-item">
+                <label>Seat(s):</label>
+                <span>{{ selectedTicket.seats.join(', ') }}</span>
+              </div>
+              <div class="detail-item">
+                <label>Amount:</label>
+                <span>${{ selectedTicket.totalAmount.toFixed(2) }}</span>
+              </div>
+            </div>
+  
+            <div class="detail-group">
+              <div class="detail-item">
+                <label>Payment Method:</label>
+                <span>{{ selectedTicket.paymentMethod }}</span>
+              </div>
+              <div class="detail-item">
+                <label>Booking Date:</label>
+                <span>{{ formatDate(selectedTicket.bookingDate) }}</span>
+              </div>
+            </div>
+  
+            <div class="detail-item" *ngIf="selectedTicket.lastUpdated">
+              <label>Last Updated:</label>
+              <span>{{ formatDate(selectedTicket.lastUpdated) }}</span>
+            </div>
+          </div>
+  
+          <div class="ticket-actions">
+            <button 
+              class="btn-action" 
+              [disabled]="selectedTicket.status !== 'active'"
+              (click)="updateTicketStatus(selectedTicket.id, 'used')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              Mark as Used
+            </button>
+            <button 
+              class="btn-action" 
+              [disabled]="selectedTicket.status !== 'active'"
+              (click)="updateTicketStatus(selectedTicket.id, 'canceled')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+              </svg>
+              Cancel Ticket
+            </button>
+            <button 
+              class="btn-action" 
+              [disabled]="selectedTicket.status === 'refunded' || selectedTicket.status === 'canceled'"
+              (click)="confirmRefund(selectedTicket.id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 12H6m0 0 6-6m-6 6 6 6"></path>
+              </svg>
+              Refund Ticket
+            </button>
+            <button class="btn-action" (click)="resendConfirmation(selectedTicket.id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              Resend Email
+            </button>
+            <button class="btn-action" (click)="generateReceipt(selectedTicket.id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Generate Receipt
+            </button>
+            <button class="btn-action delete" (click)="confirmDelete(selectedTicket.id)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+              Delete Ticket
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+      <div class="modal-content">
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete this ticket? This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+          <button class="btn-danger" (click)="deleteTicket()" [disabled]="isActionInProgress">
+            <span *ngIf="!isActionInProgress">Delete</span>
+            <span *ngIf="isActionInProgress">Processing...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Refund Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showRefundConfirmation">
+      <div class="modal-content">
+        <h3>Confirm Refund</h3>
+        <p>Are you sure you want to refund this ticket? The ticket status will be changed to 'Refunded'.</p>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="cancelRefund()">Cancel</button>
+          <button class="btn-primary" (click)="refundTicket()" [disabled]="isActionInProgress">
+            <span *ngIf="!isActionInProgress">Refund</span>
+            <span *ngIf="isActionInProgress">Processing...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
