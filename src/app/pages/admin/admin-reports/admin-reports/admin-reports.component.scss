@@ -1,0 +1,548 @@
+@use 'sass:color';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:host {
+  display: block;
+  padding-top: 70px; // Account for fixed navbar
+  background-color: #0a0a0a;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.admin-reports-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-header {
+  margin-bottom: 2rem;
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent; 
+  }
+  
+  p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+  }
+}
+
+// Report Type Selection
+.report-type-selection {
+  .report-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    
+    @media (max-width: 992px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+    
+    .report-card {
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      padding: 2rem;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+      }
+      
+      &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
+        
+        &::after {
+          transform: scaleX(1);
+        }
+      }
+      
+      .report-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        
+        &.sales {
+          background: linear-gradient(135deg, #e50914, #b20710);
+          box-shadow: 0 10px 20px -5px rgba(229, 9, 20, 0.4);
+        }
+        
+        &.movie {
+          background: linear-gradient(135deg, #8934eb, #6321b0);
+          box-shadow: 0 10px 20px -5px rgba(137, 52, 235, 0.4);
+        }
+        
+        &.user {
+          background: linear-gradient(135deg, #00b4d8, #0077b6);
+          box-shadow: 0 10px 20px -5px rgba(0, 180, 216, 0.4);
+        }
+      }
+      
+      &:hover .report-icon {
+        transform: scale(1.1);
+      }
+      
+      &::after {
+        background: linear-gradient(90deg, #e50914, #b20710);
+      }
+      
+      &:nth-child(2)::after {
+        background: linear-gradient(90deg, #8934eb, #6321b0);
+      }
+      
+      &:nth-child(3)::after {
+        background: linear-gradient(90deg, #00b4d8, #0077b6);
+      }
+      
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      
+      p {
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+// Report Content
+.report-content {
+  .report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      
+      .btn-back {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        padding: 0.5rem;
+        margin-right: 0.5rem;
+        cursor: pointer;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+          transform: translateX(-2px);
+        }
+      }
+    }
+    
+    .report-actions {
+      display: flex;
+      gap: 1rem;
+      
+      button {
+        padding: 0.8rem 1.2rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        border: none;
+        
+        &.btn-custom {
+          background-color: #e50914;
+          color: #ffffff;
+          
+          &:hover {
+            background-color: color.adjust(#e50914, $lightness: -8%);
+            transform: translateY(-2px);
+          }
+        }
+        
+        &.btn-export {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+          
+          &:hover:not(:disabled) {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+          }
+          
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+  
+  .report-message {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    
+    &.error {
+      background-color: rgba(229, 9, 20, 0.2);
+      border: 1px solid rgba(229, 9, 20, 0.5);
+    }
+    
+    &.success {
+      background-color: rgba(39, 174, 96, 0.2);
+      border: 1px solid rgba(39, 174, 96, 0.5);
+    }
+  }
+  
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 0;
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #e50914;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+  
+  // Custom Report Form
+  .custom-report-form {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    
+    .form-header {
+      margin-bottom: 1.5rem;
+      
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+      
+      select, input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        color: #ffffff;
+        font-size: 1rem;
+        
+        &:focus {
+          outline: none;
+          border-color: #e50914;
+          box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
+        }
+        option {
+          background-color: #1a1a1a; /* Match your form background */
+          color: #ffffff;
+          padding: 8px;
+        }
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      
+      button {
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        
+        &.btn-cancel {
+          background: none;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          color: rgba(255, 255, 255, 0.8);
+          
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+          }
+        }
+        
+        &.btn-generate {
+          background-color: #e50914;
+          color: #ffffff;
+          border: none;
+          
+          &:hover {
+            background-color: color.adjust(#e50914, $lightness: -8%);
+            transform: translateY(-2px);
+          }
+        }
+      }
+    }
+  }
+  
+  // Report Containers
+  .report-container {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    
+    .report-periods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      
+      .period-selector {
+        padding: 0.8rem 1.2rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:hover:not(.active) {
+          background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        &.active {
+          background-color: #e50914;
+        }
+      }
+    }
+    
+    .report-details {
+      .report-date-range {
+        margin-bottom: 1.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+        
+        span {
+          font-weight: 600;
+          color: #ffffff;
+        }
+      }
+      
+      .metric-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        
+        @media (max-width: 768px) {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        
+        @media (max-width: 576px) {
+          grid-template-columns: 1fr;
+        }
+        
+        .metric-card {
+          background-color: rgba(255, 255, 255, 0.05);
+          border-radius: 8px;
+          padding: 1.5rem;
+          text-align: center;
+          
+          .metric-title {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+          }
+          
+          .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+          }
+        }
+        
+        .sales-report & .metric-card:nth-child(1) {
+          background-color: rgba(229, 9, 20, 0.1);
+          border-left: 3px solid rgba(229, 9, 20, 0.5);
+        }
+        
+        .movie-report & .metric-card:nth-child(1) {
+          background-color: rgba(137, 52, 235, 0.1);
+          border-left: 3px solid rgba(137, 52, 235, 0.5);
+        }
+        
+        .user-report & .metric-card:nth-child(1) {
+          background-color: rgba(0, 180, 216, 0.1);
+          border-left: 3px solid rgba(0, 180, 216, 0.5);
+        }
+      }
+      
+      .report-sections {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        
+        @media (max-width: 992px) {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .report-section {
+        margin-bottom: 2rem;
+        
+        h3 {
+          font-size: 1.3rem;
+          font-weight: 600;
+          margin-bottom: 1.2rem;
+          padding-bottom: 0.8rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .report-table {
+          width: 100%;
+          border-collapse: collapse;
+          
+          th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          }
+          
+          th {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(0, 0, 0, 0.2);
+          }
+          
+          td {
+            font-size: 0.95rem;
+          }
+          
+          tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+          }
+        }
+      }
+      
+      // Movie Info section
+      .movie-info {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        
+        @media (max-width: 576px) {
+          flex-direction: column;
+        }
+        
+        .movie-poster {
+          width: 120px;
+          height: 180px;
+          overflow: hidden;
+          border-radius: 8px;
+          flex-shrink: 0;
+          
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        
+        .movie-details {
+          h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+          }
+          
+          p {
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            
+            .rating {
+              color: #ffcc00;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
+}

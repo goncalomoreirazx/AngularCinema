@@ -1,1 +1,336 @@
-<p>admin-reports works!</p>
+<div class="admin-reports-container">
+    <div class="admin-header">
+      <h1>Analytics & Reports</h1>
+      <p>Access sales data, movie performance metrics, and user activity statistics</p>
+    </div>
+  
+    <!-- Report Type Selection -->
+    <div class="report-type-selection" *ngIf="!selectedReportType">
+      <div class="report-cards">
+        <div class="report-card" *ngFor="let report of reportTypes" (click)="selectReportType(report.id)">
+          <div class="report-icon" [class]="report.id">
+            <ng-container [ngSwitch]="report.icon">
+              <svg *ngSwitchCase="'chart-line'" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="7" y2="8"></line>
+                <line x1="7" y1="8" x2="13" y2="14"></line>
+                <line x1="13" y1="14" x2="17" y2="10"></line>
+                <line x1="17" y1="10" x2="21" y2="14"></line>
+                <line x1="1" y1="22" x2="23" y2="22"></line>
+              </svg>
+              <svg *ngSwitchCase="'film'" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                <line x1="7" y1="2" x2="7" y2="22"></line>
+                <line x1="17" y1="2" x2="17" y2="22"></line>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <line x1="2" y1="7" x2="7" y2="7"></line>
+                <line x1="2" y1="17" x2="7" y2="17"></line>
+                <line x1="17" y1="17" x2="22" y2="17"></line>
+                <line x1="17" y1="7" x2="22" y2="7"></line>
+              </svg>
+              <svg *ngSwitchCase="'users'" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </ng-container>
+          </div>
+          <h3>{{ report.title }}</h3>
+          <p>{{ report.description }}</p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Report Content Section -->
+    <div class="report-content" *ngIf="selectedReportType">
+      <div class="report-header">
+        <h2>
+          <button class="btn-back" (click)="selectedReportType = ''">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          {{ selectedReportType === 'sales' ? 'Sales & Revenue Reports' : 
+             selectedReportType === 'movie' ? 'Movie Performance Reports' : 
+             'User Activity Reports' }}
+        </h2>
+        <div class="report-actions">
+          <button class="btn-custom" (click)="showCustomReport()">Custom Report</button>
+          <button class="btn-export" (click)="exportReport(selectedReportType)" [disabled]="(selectedReportType === 'sales' && !selectedSalesReport) || (selectedReportType === 'movie' && !selectedMovieReport) || (selectedReportType === 'user' && !selectedUserReport)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export to CSV
+          </button>
+        </div>
+      </div>
+  
+      <!-- Message Display -->
+      <div class="report-message" *ngIf="reportMessage.text" [class.error]="reportMessage.type === 'error'" [class.success]="reportMessage.type === 'success'">
+        {{ reportMessage.text }}
+      </div>
+  
+      <!-- Loading Spinner -->
+      <div class="loading-spinner" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading report data...</p>
+      </div>
+  
+      <!-- Custom Report Form -->
+      <div class="custom-report-form" *ngIf="showCustomReportForm">
+        <div class="form-header">
+          <h3>Generate Custom Report</h3>
+        </div>
+        <form [formGroup]="customReportForm" (ngSubmit)="generateCustomReport()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="reportType">Report Type</label>
+              <select id="reportType" formControlName="reportType">
+                <option value="sales">Sales & Revenue</option>
+                <option value="movie">Movie Performance</option>
+                <option value="user">User Activity</option>
+              </select>
+            </div>
+  
+            <div class="form-group" *ngIf="customReportForm.get('reportType')?.value === 'movie'">
+              <label for="movieId">Select Movie</label>
+              <select id="movieId" formControlName="movieId">
+                <option value="">All Movies</option>
+                <option *ngFor="let movie of movies" [value]="movie.id">{{ movie.title }}</option>
+              </select>
+            </div>
+  
+            <div class="form-group">
+              <label for="startDate">Start Date</label>
+              <input type="date" id="startDate" formControlName="startDate">
+            </div>
+  
+            <div class="form-group">
+              <label for="endDate">End Date</label>
+              <input type="date" id="endDate" formControlName="endDate">
+            </div>
+          </div>
+  
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="cancelCustomReport()">Cancel</button>
+            <button type="submit" class="btn-generate">Generate Report</button>
+          </div>
+        </form>
+      </div>
+  
+      <!-- Sales Reports -->
+      <div class="report-container sales-report" *ngIf="selectedReportType === 'sales' && !showCustomReportForm && !isLoading">
+        <div class="report-periods">
+          <div class="period-selector" *ngFor="let report of salesReports" 
+               [class.active]="selectedSalesReport?.id === report.id"
+               (click)="selectSalesReport(report)">
+            {{ report.period }}
+          </div>
+        </div>
+  
+        <div class="report-details" *ngIf="selectedSalesReport">
+          <div class="report-date-range">
+            <span>{{ formatDisplayDate(selectedSalesReport.startDate) }}</span> to 
+            <span>{{ formatDisplayDate(selectedSalesReport.endDate) }}</span>
+          </div>
+  
+          <div class="metric-cards">
+            <div class="metric-card">
+              <div class="metric-title">Total Revenue</div>
+              <div class="metric-value">${{ selectedSalesReport.totalRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Tickets Sold</div>
+              <div class="metric-value">{{ selectedSalesReport.ticketsSold.toLocaleString() }}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Average Ticket Price</div>
+              <div class="metric-value">${{ selectedSalesReport.averageTicketPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
+            </div>
+          </div>
+  
+          <div class="report-sections">
+            <div class="report-section">
+              <h3>Top Performing Movies</h3>
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Movie</th>
+                    <th>Revenue</th>
+                    <th>Tickets Sold</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let movie of selectedSalesReport.topMovies">
+                    <td>{{ movie.title }}</td>
+                    <td>${{ movie.revenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</td>
+                    <td>{{ movie.ticketsSold.toLocaleString() }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+  
+            <div class="report-section">
+              <h3>Daily Revenue</h3>
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Revenue</th>
+                    <th>Tickets Sold</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let day of selectedSalesReport.revenueByDay">
+                    <td>{{ formatDisplayDate(day.date) }}</td>
+                    <td>${{ day.revenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</td>
+                    <td>{{ day.ticketsSold.toLocaleString() }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Movie Performance Reports -->
+      <div class="report-container movie-report" *ngIf="selectedReportType === 'movie' && !showCustomReportForm && !isLoading">
+        <div class="report-periods">
+          <div class="period-selector" *ngFor="let report of movieReports" 
+               [class.active]="selectedMovieReport?.id === report.id"
+               (click)="selectMovieReport(report)">
+            {{ report.title }}
+          </div>
+        </div>
+  
+        <div class="report-details" *ngIf="selectedMovieReport">
+          <div class="movie-info">
+            <div class="movie-poster">
+              <img [src]="selectedMovieReport.posterUrl" [alt]="selectedMovieReport.title + ' poster'">
+            </div>
+            <div class="movie-details">
+              <h3>{{ selectedMovieReport.title }}</h3>
+              <p class="release-date">Release Date: {{ formatDisplayDate(selectedMovieReport.releaseDate) }}</p>
+              <p class="average-rating">Average Rating: 
+                <span class="rating">{{ selectedMovieReport.averageRating.toFixed(1) }}/5</span>
+              </p>
+            </div>
+          </div>
+  
+          <div class="metric-cards">
+            <div class="metric-card">
+              <div class="metric-title">Total Revenue</div>
+              <div class="metric-value">${{ selectedMovieReport.totalRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Tickets Sold</div>
+              <div class="metric-value">{{ selectedMovieReport.ticketsSold.toLocaleString() }}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Occupancy Rate</div>
+              <div class="metric-value">{{ selectedMovieReport.occupancyRate.toFixed(1) }}%</div>
+            </div>
+          </div>
+  
+          <div class="report-section">
+            <h3>Daily Performance</h3>
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Revenue</th>
+                  <th>Tickets Sold</th>
+                  <th>Occupancy Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let day of selectedMovieReport.performanceByDay">
+                  <td>{{ formatDisplayDate(day.date) }}</td>
+                  <td>${{ day.revenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</td>
+                  <td>{{ day.ticketsSold.toLocaleString() }}</td>
+                  <td>{{ day.occupancyRate.toFixed(1) }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  
+      <!-- User Activity Reports -->
+      <div class="report-container user-report" *ngIf="selectedReportType === 'user' && !showCustomReportForm && !isLoading">
+        <div class="report-periods">
+          <div class="period-selector" *ngFor="let report of userReports" 
+               [class.active]="selectedUserReport?.id === report.id"
+               (click)="selectUserReport(report)">
+            {{ report.period }}
+          </div>
+        </div>
+  
+        <div class="report-details" *ngIf="selectedUserReport">
+          <div class="report-date-range">
+            <span>{{ formatDisplayDate(selectedUserReport.startDate) }}</span> to 
+            <span>{{ formatDisplayDate(selectedUserReport.endDate) }}</span>
+          </div>
+  
+          <div class="metric-cards">
+            <div class="metric-card">
+              <div class="metric-title">Active Users</div>
+              <div class="metric-value">{{ selectedUserReport.totalActiveUsers.toLocaleString() }}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">New Users</div>
+              <div class="metric-value">{{ selectedUserReport.newUsers.toLocaleString() }}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Returning Users</div>
+              <div class="metric-value">{{ selectedUserReport.returningUsers.toLocaleString() }}</div>
+            </div>
+          </div>
+  
+          <div class="report-sections">
+            <div class="report-section">
+              <h3>Top Users by Bookings</h3>
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Bookings</th>
+                    <th>Total Spent</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of selectedUserReport.topUsersByBookings">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.bookings }}</td>
+                    <td>${{ user.totalSpent.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+  
+            <div class="report-section">
+              <h3>Daily User Activity</h3>
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Active Users</th>
+                    <th>New Users</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let day of selectedUserReport.usersByDay">
+                    <td>{{ formatDisplayDate(day.date) }}</td>
+                    <td>{{ day.activeUsers }}</td>
+                    <td>{{ day.newUsers }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

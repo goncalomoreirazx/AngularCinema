@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AdminUserService, User } from '../../../../services/admin-user-service';
+import { AdminUserService, User } from '../../../../services/admin-user.service'
 
 @Component({
   selector: 'app-admin-users',
