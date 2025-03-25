@@ -281,6 +281,7 @@ $gradient-dark: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0
       align-items: center;
       transform: translateX(-100%);
       transition: transform 0.3s ease;
+      z-index: 1000;
       
       &.active {
         transform: translateX(0);
@@ -300,8 +301,43 @@ $gradient-dark: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0
     }
 
     .navbar-actions {
-      .btn-tickets {
+      position: fixed;
+      top: 70%;
+      left: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+      padding: 0 2rem;
+      
+      &.active {
+        transform: translateX(0);
+      }
+      
+      .btn-search {
         display: none;
+      }
+      
+      .btn-tickets, .btn-login {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .user-menu {
+        flex-direction: column;
+        width: 100%;
+        
+        .user-info {
+          margin-bottom: 0.5rem;
+        }
+        
+        .btn-logout {
+          width: 100%;
+        }
       }
     }
   }
