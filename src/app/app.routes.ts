@@ -9,6 +9,7 @@ import { AdminMoviesComponent } from './pages/admin/admin-movies/admin-movies/ad
 import { AdminReviewsComponent } from './pages/admin/admin-reviews/admin-reviews/admin-reviews.component';
 import { AdminSchedulesComponent } from './pages/admin/admin-schedules/admin-schedules/admin-schedules.component';
 import { AdminUsersComponent } from './pages/admin/admin-users/admin-users/admin-users.component';
+import { AdminTicketsComponent } from './pages/admin/admin-tickets/admin-tickets/admin-tickets.component';
 import { BookingComponent } from './pages/booking/booking.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
@@ -46,6 +47,11 @@ export const routes: Routes = [
   {
     path: 'admin/users',
     component: AdminUsersComponent,
+    canActivate: [AuthGuard, AdminGuard]
+  },
+  {
+    path: 'admin/tickets',
+    component: AdminTicketsComponent,
     canActivate: [AuthGuard, AdminGuard]
   },
 
