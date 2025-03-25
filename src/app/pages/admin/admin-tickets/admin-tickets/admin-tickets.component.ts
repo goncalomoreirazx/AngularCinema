@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminTicketService, Ticket } from '../../../../services/admin-ticket-service';
+import { AdminTicketService, Ticket } from '../../../../services/admin-ticket.service';
 
 @Component({
   selector: 'app-admin-tickets',
