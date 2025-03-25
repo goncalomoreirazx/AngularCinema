@@ -1,1 +1,278 @@
-<p>admin-users works!</p>
+<div class="admin-users-container">
+    <div class="admin-header">
+      <h1>User Management</h1>
+      <p>Manage user accounts and permissions</p>
+    </div>
+  
+    <!-- User Form Section -->
+    <div class="user-form-section">
+      <div class="form-header">
+        <h2>{{ isEditing ? 'Edit User' : 'Add New User' }}</h2>
+        <button *ngIf="!isEditing" class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+      </div>
+  
+      <div class="form-message" *ngIf="formMessage.text" [class.error]="formMessage.type === 'error'" [class.success]="formMessage.type === 'success'">
+        {{ formMessage.text }}
+      </div>
+  
+      <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="username">Username*</label>
+            <input type="text" id="username" formControlName="username" placeholder="Enter username">
+            <div class="error-message" *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+              Username is required (minimum 4 characters)
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="name">Full Name*</label>
+            <input type="text" id="name" formControlName="name" placeholder="Enter full name">
+            <div class="error-message" *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">
+              Full name is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="email">Email*</label>
+            <input type="email" id="email" formControlName="email" placeholder="Enter email address">
+            <div class="error-message" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+              Valid email address is required
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="role">Role*</label>
+            <select id="role" formControlName="role">
+              <option value="user">Regular User</option>
+              <option value="admin">Administrator</option>
+            </select>
+          </div>
+  
+          <div class="form-group">
+            <label for="status">Status*</label>
+            <select id="status" formControlName="status">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </div>
+  
+          <div class="form-group">
+            <label for="avatar">Avatar URL</label>
+            <input type="text" id="avatar" formControlName="avatar" placeholder="Enter avatar image URL">
+          </div>
+  
+          <div class="form-group">
+            <label for="password">{{ isEditing ? 'New Password' : 'Password*' }}</label>
+            <input type="password" id="password" formControlName="password" placeholder="{{ isEditing ? 'Leave blank to keep current password' : 'Enter password' }}">
+            <div class="error-message" *ngIf="!isEditing && userForm.get('password')?.invalid && userForm.get('password')?.touched">
+              Password is required (minimum 6 characters)
+            </div>
+          </div>
+  
+          <div class="form-group">
+            <label for="confirmPassword">{{ isEditing ? 'Confirm New Password' : 'Confirm Password*' }}</label>
+            <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="{{ isEditing ? 'Leave blank to keep current password' : 'Confirm password' }}">
+            <div class="error-message" *ngIf="userForm.hasError('passwordMismatch') && userForm.get('confirmPassword')?.touched">
+              Passwords do not match
+            </div>
+          </div>
+        </div>
+  
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+          <button type="submit" class="btn-primary">{{ isEditing ? 'Update User' : 'Add User' }}</button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Users List Section -->
+    <div class="users-list-section">
+      <div class="section-header">
+        <h2>Users</h2>
+        <button class="btn-add" (click)="newUser()">Add New User</button>
+      </div>
+  
+      <div class="filters">
+        <div class="filter-group">
+          <label for="statusFilter">Status:</label>
+          <select id="statusFilter" [(ngModel)]="statusFilter" (change)="onStatusFilterChange()">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="roleFilter">Role:</label>
+          <select id="roleFilter" [(ngModel)]="roleFilter" (change)="onRoleFilterChange()">
+            <option value="">All Roles</option>
+            <option value="admin">Administrator</option>
+            <option value="user">Regular User</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="searchFilter">Search:</label>
+          <input 
+            type="text" 
+            id="searchFilter" 
+            [(ngModel)]="searchFilter" 
+            (input)="onSearchFilterChange()" 
+            placeholder="Search by name, username, or email">
+        </div>
+        
+        <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+      </div>
+  
+      <div class="loading-spinner" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading users...</p>
+      </div>
+  
+      <div class="users-table-container" *ngIf="!isLoading">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Registration</th>
+              <th>Last Login</th>
+              <th>Bookings</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers">
+              <td class="user-cell">
+                <div class="user-info">
+                  <img [src]="user.avatar || '/assets/images/avatars/default.jpg'" [alt]="user.name" class="user-avatar">
+                  <div class="user-details">
+                    <div class="user-name">{{ user.name }}</div>
+                    <div class="username"><!--@-->{{ user.username }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="role-badge" [class]="user.role">
+                  {{ getRoleLabel(user.role) }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [class]="user.status">
+                  {{ getStatusLabel(user.status) }}
+                </span>
+              </td>
+              <td>{{ formatDate(user.registrationDate) }}</td>
+              <td>{{ formatDate(user.lastLogin) }}</td>
+              <td class="bookings-cell">
+                <div class="bookings-info">
+                  <span class="bookings-count">{{ user.bookingsCount }}</span>
+                  <button class="btn-view-bookings" *ngIf="user.bookingsCount > 0" (click)="viewUserBookings(user.id)" title="View Bookings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+              <td class="actions-cell">
+                <button class="btn-edit" (click)="editUser(user)" title="Edit User">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                  </svg>
+                </button>
+                <button class="btn-delete" (click)="confirmDelete(user.id)" title="Delete User">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <div class="no-users" *ngIf="filteredUsers.length === 0">
+          <p>No users found matching your filters.</p>
+          <button class="btn-clear" (click)="clearFilters()">Clear Filters</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- User Bookings Modal -->
+    <div class="modal-overlay" *ngIf="viewingUserBookings">
+      <div class="modal-content bookings-modal">
+        <div class="modal-header">
+          <h3>User Bookings</h3>
+          <button class="btn-close" (click)="closeUserBookings()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+  
+        <div class="loading-spinner" *ngIf="isLoadingBookings">
+          <div class="spinner"></div>
+          <p>Loading bookings...</p>
+        </div>
+  
+        <div class="bookings-list" *ngIf="!isLoadingBookings">
+          <table class="bookings-table" *ngIf="userBookings.length > 0">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Movie</th>
+                <th>Date</th>
+                <th>Seats</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let booking of userBookings">
+                <td>#{{ booking.id }}</td>
+                <td>{{ booking.movieTitle }}</td>
+                <td>{{ formatDate(booking.date) }}</td>
+                <td>{{ booking.seats.join(', ') }}</td>
+                <td>${{ booking.totalAmount.toFixed(2) }}</td>
+                <td>
+                  <span class="booking-status" [class]="booking.status">
+                    {{ booking.status | titlecase }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <div class="no-bookings" *ngIf="userBookings.length === 0">
+            <p>This user has no bookings yet.</p>
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="closeUserBookings()">Close</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" *ngIf="showDeleteConfirmation">
+      <div class="modal-content">
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete this user? This action cannot be undone and will remove all associated bookings and reviews.</p>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="cancelDelete()">Cancel</button>
+          <button class="btn-danger" (click)="deleteUser()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>

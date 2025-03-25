@@ -1,0 +1,638 @@
+@use 'sass:color';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:host {
+  display: block;
+  padding-top: 70px; // Account for fixed navbar
+  background-color: #0a0a0a;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.admin-users-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-header {
+  margin-bottom: 2rem;
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent; 
+  }
+  
+  p {
+    font-size: 1.1rem;
+    opacity: 0.85;
+  }
+}
+
+.user-form-section {
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+  }
+  
+  .form-message {
+    padding: 0.8rem 1rem;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    
+    &.error {
+      background-color: rgba(229, 9, 20, 0.2);
+      border: 1px solid rgba(229, 9, 20, 0.5);
+    }
+    
+    &.success {
+      background-color: rgba(39, 174, 96, 0.2);
+      border: 1px solid rgba(39, 174, 96, 0.5);
+    }
+  }
+  
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    @media (max-width: 992px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 576px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      color: #ffffff;
+      font-size: 1rem;
+      
+      &:focus {
+        outline: none;
+        border-color: #e50914;
+        box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.3);
+      }
+      
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+    }
+    
+    option {
+      background-color: #1a1a1a;
+      color: #ffffff;
+      padding: 8px;
+    }
+    
+    .error-message {
+      color: #e50914;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    
+    button {
+      padding: 0.8rem 1.5rem;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      border: none;
+      
+      &.btn-primary {
+        background-color: #e50914;
+        color: #ffffff;
+        
+        &:hover {
+          background-color: color.adjust(#e50914, $lightness: -8%);
+          transform: translateY(-2px);
+        }
+      }
+      
+      &.btn-secondary {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
+
+.users-list-section {
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    
+    .btn-add {
+      background-color: #e50914;
+      color: #ffffff;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: color.adjust(#e50914, $lightness: -8%);
+        transform: translateY(-2px);
+      }
+    }
+  }
+  
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+      label {
+        font-weight: 500;
+      }
+      
+      select, input {
+        padding: 0.6rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        color: #ffffff;
+        font-size: 0.9rem;
+        min-width: 120px;
+        
+        &:focus {
+          outline: none;
+          border-color: #e50914;
+        }
+      }
+      
+      input {
+        min-width: 250px;
+      }
+    }
+    
+    .btn-clear {
+      background-color: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 0.6rem 1rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+  
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 0;
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #e50914;
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+  
+  .users-table-container {
+    overflow-x: auto;
+    
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      
+      th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      th {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      
+      tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+      
+      .user-cell {
+        min-width: 200px;
+        
+        .user-info {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          
+          .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+          
+          .user-details {
+            .user-name {
+              font-weight: 500;
+              margin-bottom: 0.3rem;
+            }
+            
+            .username {
+              font-size: 0.85rem;
+              color: rgba(255, 255, 255, 0.6);
+            }
+          }
+        }
+      }
+      
+      .bookings-cell {
+        .bookings-info {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          
+          .bookings-count {
+            font-weight: 500;
+          }
+          
+          .btn-view-bookings {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            
+            &:hover {
+              background-color: rgba(52, 152, 219, 0.1);
+              transform: translateY(-2px);
+            }
+          }
+        }
+      }
+      
+      .status-badge, .role-badge {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      
+      .status-badge {
+        &.active {
+          background-color: rgba(46, 204, 113, 0.2);
+          color: #2ecc71;
+        }
+        
+        &.inactive {
+          background-color: rgba(189, 195, 199, 0.2);
+          color: #bdc3c7;
+        }
+        
+        &.suspended {
+          background-color: rgba(231, 76, 60, 0.2);
+          color: #e74c3c;
+        }
+      }
+      
+      .role-badge {
+        &.admin {
+          background-color: rgba(155, 89, 182, 0.2);
+          color: #9b59b6;
+        }
+        
+        &.user {
+          background-color: rgba(52, 152, 219, 0.2);
+          color: #3498db;
+        }
+      }
+      
+      .actions-cell {
+        white-space: nowrap;
+        
+        button {
+          background: none;
+          border: none;
+          color: #ffffff;
+          cursor: pointer;
+          padding: 0.5rem;
+          border-radius: 3px;
+          transition: all 0.2s ease;
+          
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+          }
+          
+          &.btn-edit {
+            color: #3498db;
+          }
+          
+          &.btn-delete {
+            color: #e74c3c;
+          }
+        }
+      }
+    }
+    
+    .no-users {
+      padding: 3rem 0;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      
+      p {
+        margin-bottom: 1rem;
+      }
+      
+      .btn-clear {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        padding: 0.6rem 1.2rem;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  
+  .modal-content {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    
+    &.bookings-modal {
+      max-width: 800px;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      
+      h3 {
+        font-size: 1.6rem;
+        font-weight: 600;
+      }
+      
+      .btn-close {
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        padding: 0.3rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+        }
+      }
+    }
+    
+    h3 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      margin-bottom: 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.5;
+    }
+    
+    .bookings-list {
+      max-height: 400px;
+      overflow-y: auto;
+      
+      .bookings-table {
+        width: 100%;
+        border-collapse: collapse;
+        
+        th, td {
+          padding: 0.8rem;
+          text-align: left;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.8);
+          background-color: rgba(0, 0, 0, 0.3);
+          position: sticky;
+          top: 0;
+          z-index: 1;
+        }
+        
+        .booking-status {
+          display: inline-block;
+          padding: 0.3rem 0.6rem;
+          border-radius: 100px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          
+          &.completed {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+          }
+          
+          &.pending {
+            background-color: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+          }
+          
+          &.cancelled {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+          }
+        }
+      }
+      
+      .no-bookings {
+        padding: 2rem 0;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+    
+    .modal-footer {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: flex-end;
+    }
+    
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      
+      button {
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        border: none;
+        
+        &.btn-secondary {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: #ffffff;
+          
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+          }
+        }
+        
+        &.btn-danger {
+          background-color: #e74c3c;
+          color: #ffffff;
+          
+          &:hover {
+            background-color: color.adjust(#e74c3c, $lightness: -8%);
+          }
+        }
+      }
+    }
+  }
+}
+
+.btn-cancel {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
